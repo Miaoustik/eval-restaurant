@@ -1,0 +1,25 @@
+$primary: #381B1D;
+$secondary: #965B31;
+$info: #F7A458;
+$navbar-light-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='#381B1D' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+$navbar-toggler-focus-width: 0;
+$offcanvas-horizontal-width: 80%;
+
+@import "~bootstrap/scss/bootstrap";
+@import '~bootstrap-icons/font/bootstrap-icons.css';
+
+
+@font-face {
+  font-family: 'Great Vibes';
+  src: url("../fonts/GreatVibes-Regular.ttf") format('truetype');
+}
+
+@font-face {
+  font-family: 'Merriweather';
+  src: url("../fonts/Merriweather-Regular.ttf") format('truetype');
+}
+
+@font-face {
+  font-family: 'MuktaVaani';
+  src: url("../fonts/MuktaVaani-Regular.ttf") format('truetype');
+}
