@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: HoraireDayRepository::class)]
 class HoraireDay
@@ -16,18 +17,23 @@ class HoraireDay
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['HOME_DATA'])]
     #[ORM\Column(length: 50)]
     private ?string $dayName = null;
 
+    #[Groups(['HOME_DATA'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $morningStart = null;
 
+    #[Groups(['HOME_DATA'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $morningEnd = null;
 
+    #[Groups(['HOME_DATA'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $eveningStart = null;
 
+    #[Groups(['HOME_DATA'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $eveningEnd = null;
 

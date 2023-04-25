@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class IndexController extends AbstractController
 {
-    #[Route(path: '/', name: 'app_index')]
+    #[Route(path: '/{string}', name: 'app_index' , requirements: ['string' => '.+'], defaults: ['string' => '/'], methods: ['GET'])]
     public function index (): Response
     {
         return $this->render('base.html.twig');

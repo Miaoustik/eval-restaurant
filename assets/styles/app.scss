@@ -1,5 +1,33 @@
 html {
     font-size: 16px;
+    height: 100%;
+    width: 100%;
+}
+
+#root {
+    height: 100%;
+}
+
+.mainContainer {
+    padding-top: 3.666875rem;
+}
+
+.hoverPrimary {
+    &:hover {
+        color: var(--bs-info) !important;
+    }
+}
+
+.merri {
+    font-family: Merriweather, sans-serif;
+}
+
+.carousel-inner {
+    height: 100% !important;
+}
+
+body {
+    height: 100%;
 }
 
 .x {
@@ -48,5 +76,5 @@ html {
 }
 
 .hoverSecondary:hover {
-    color: #F7A458 !important;
+    color: var(--bs-secondary) !important;
 }
