@@ -3,7 +3,6 @@ import styled from "styled-components";
 import {Container} from "react-bootstrap";
 
 export default function ({ horaires }) {
-
     return (
         <Footer className={'w-100 text-primary pb-5'}>
             <Container>

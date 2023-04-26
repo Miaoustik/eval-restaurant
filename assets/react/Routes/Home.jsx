@@ -7,9 +7,11 @@ import vegan from '../../images/vegan-1920.jpg';
 import { Carousel, CarouselItem } from "react-bootstrap";
 import styled from "styled-components";
 import nature from '../../images/nature-sprite.png';
+import useScrollToTop from "../Hooks/useScrollToTop";
 
 export default function ({ horaires }) {
 
+    useScrollToTop()
     const [index, setIndex] = useState(0);
 
     const handleSelect = (selectedIndex, e) => {

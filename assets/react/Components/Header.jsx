@@ -38,7 +38,7 @@ export default function ({ light = '0' }) {
                     <Span>Navigation</Span>
                 </Button>
             </nav>
-            <Nav light={light} className={'p-0 d-flex gap-1 navbar border-bottom border-1 pe-2' + (light === '1' ? ' border-white fixed-top' : ' border-primary fixed-top')} >
+            <Nav light={light} className={'d-flex gap-1 navbar border-bottom border-1' + (light === '1' ? ' border-white fixed-top' : ' border-primary fixed-top')} >
                 <Brand to={'/'} className={'navbar-brand mx-auto ' + (light === '1' ? 'text-white' : 'text-primary')}>Quai Antique</Brand>
                 <div>
                     <A light={light} to={'/'} className={'btn fs-6 me-2' }>Réserver</A>
@@ -55,7 +55,7 @@ const Nav = styled.nav`
     font-family: Merriweather, sans-serif;
     box-shadow: 0px 4px 4px 0px #00000040;
     z-index: 1025;
-    padding-left: 3.4rem !important;
+    padding: 0 1rem 0 3rem !important;
 `
 
 const Brand = styled(Link)`
@@ -141,7 +141,7 @@ const A = styled(Link)`
     transition: .2s transform ease-in-out;
     z-index: 0;
     overflow: hidden;
-    border-radius: 1rem;
+    border-radius: 1rem !important;
     color: ${props => props.light === '0' ? '#381B1D' : 'white'} !important;
     border: solid 2px ${props => props.light === '0' ? '#381B1D' : 'white'} !important;
     &::after{

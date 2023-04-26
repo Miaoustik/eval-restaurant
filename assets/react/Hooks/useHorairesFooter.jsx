@@ -1,7 +1,7 @@
 import useFetch from "./useFetch";
 
 export default function (controllerRef) {
-    const [horaires, setHoraires, loading] = useFetch('/api/home/data', controllerRef, parseHoraires);
+    const [horaires, setHoraires, loading] = useFetch('/api/horaire', controllerRef, parseHoraires);
 
     function getHoursMins(date) {
         return date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())

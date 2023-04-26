@@ -22,6 +22,10 @@ html {
     font-family: Merriweather, sans-serif;
 }
 
+.mukta {
+    font-family: MuktaVaani, sans-serif;
+}
+
 .carousel-inner {
     height: 100% !important;
 }
@@ -77,4 +81,8 @@ body {
 
 .hoverSecondary:hover {
     color: var(--bs-secondary) !important;
+}
+
+.shadow1 {
+    box-shadow: 0 4px 4px 0 #00000040;
 }
