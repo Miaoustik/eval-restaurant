@@ -9,7 +9,10 @@ import styled from "styled-components";
 import nature from '../../images/nature-sprite.png';
 import useScrollToTop from "../Hooks/useScrollToTop";
 
-export default function ({ horaires }) {
+export default function ({ horaires, images = [] }) {
+
+    /*need images [{title, url}]*/
+    // load img setloading false on img onLoad
 
     useScrollToTop()
     const [index, setIndex] = useState(0);
@@ -23,36 +26,23 @@ export default function ({ horaires }) {
             <Header light={'1'}/>
             <Main>
                 <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
-                    <CarouselItem className={'h-100'}>
-                        <Img
-                            className={'d-block w-100'}
-                            src={homepage}
-                            alt={'Plat number 1'}
-                        />
-                        <Carousel.Caption >
-                            <h3>Plat number 1</h3>
-                        </Carousel.Caption>
-                    </CarouselItem>
-                    <CarouselItem className={'h-100'}>
-                        <Img
-                            className={'d-block w-100'}
-                            src={chef}
-                            alt={'Plat number 2'}
-                        />
-                        <Carousel.Caption >
-                            <h3>Plat number 2</h3>
-                        </Carousel.Caption>
-                    </CarouselItem>
-                    <CarouselItem className={'h-100'}>
-                        <Img
-                            className={'d-block w-100'}
-                            src={vegan}
-                            alt={'Plat number 3'}
-                        />
-                        <Carousel.Caption >
-                            <h3>Plat number 3</h3>
-                        </Carousel.Caption>
-                    </CarouselItem>
+                    {images.map((e, k) => {
+                        /*need unique key !!
+                            import img manually
+                            loading until img load*/
+                        return (
+                            <CarouselItem key={k} className={'h-100'}>
+                                <Img
+                                    className={'d-block w-100'}
+                                    src={e.url}
+                                    alt={e.title}
+                                />
+                                <Carousel.Caption >
+                                    <h3>{e.title}</h3>
+                                </Carousel.Caption>
+                            </CarouselItem>
+                        )
+                    })}
                 </CarouselStyled>
                 <div className={'d-flex justify-content-center bg-black py-2'}>
                     <ButtonContainer>

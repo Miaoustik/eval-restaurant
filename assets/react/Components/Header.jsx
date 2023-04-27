@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {Offcanvas, OffcanvasBody, OffcanvasHeader, OffcanvasTitle} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
-export default function ({ light = '0' }) {
+export default function ({ light = '0', user }) {
 
     const [show, setShow] = useState(false);
 
@@ -20,7 +20,14 @@ export default function ({ light = '0' }) {
                         </StyledOffcanvasTitle>
                     </OffcanvasHeader>
                     <OffcanvasBody>
-                        <OffCanvasA light={light} href={'#'}>Page d'acceuil</OffCanvasA>
+                        <OffCanvasA light={light} to={'/'} className={'mb-2'}>Page d'acceuil</OffCanvasA>
+                        <OffCanvasA light={light} to={'/menus'} className={'mb-2'}>Voir les menus</OffCanvasA>
+                        <OffCanvasA light={light} to={'/carte'} className={'mb-2'}>Carte du restaurant</OffCanvasA>
+                        <OffCanvasA light={light} to={'/reserver'} className={'mb-2'}>Réserver</OffCanvasA>
+                        <OffCanvasA light={light} to={'/login'} className={'mb-2'}>Se connecter</OffCanvasA>
+                        {user === null &&
+                            <OffCanvasA light={light} to={'/inscription'} className={'mb-2'}>S'inscrire</OffCanvasA>
+                        }
                     </OffcanvasBody>
                 </StyledOffCanvas>
                 <Button aria-label={'Primary Navigation Button'} className={"plate plate1 fixed-top " + (show ? ' active' : '')}  onClick={handleShow}>
@@ -99,7 +106,7 @@ const Span = styled.span`
     display: none;
 `
 
-const OffCanvasA = styled.a`
+const OffCanvasA = styled(Link)`
     color: ${props => props.light === '0' ? '#381B1D' : '#FFFFFF'};
     text-decoration: none;
     display: table;
