@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {Offcanvas, OffcanvasBody, OffcanvasHeader, OffcanvasTitle} from "react-bootstrap";
 import {Link} from "react-router-dom";
 
-export default function ({ light = '0', user }) {
+export default function ({ light = '0', user, isAdmin }) {
 
     const [show, setShow] = useState(false);
 
@@ -25,6 +25,10 @@ export default function ({ light = '0', user }) {
                         <OffCanvasA light={light} to={'/carte'} className={'mb-2'}>Carte du restaurant</OffCanvasA>
                         <OffCanvasA light={light} to={'/reserver'} className={'mb-2'}>Réserver</OffCanvasA>
                         <OffCanvasA light={light} to={'/login'} className={'mb-2'}>Se connecter</OffCanvasA>
+                        {isAdmin &&
+                            <OffCanvasA light={light} to={'/admin'} className={'mb-2'}>Gestion</OffCanvasA>
+                        }
+
                         {user === null &&
                             <OffCanvasA light={light} to={'/inscription'} className={'mb-2'}>S'inscrire</OffCanvasA>
                         }

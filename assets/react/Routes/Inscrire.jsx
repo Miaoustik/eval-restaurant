@@ -9,7 +9,7 @@ import useControllerRef from "../Hooks/useControllerRef";
 import useScrollToTop from "../Hooks/useScrollToTop";
 import LoadingFetch from "../Components/Ui/LoadingFetch";
 
-export default function ({horaires, user, login, logout}) {
+export default function ({horaires, user, login, isAdmin}) {
 
     const navigate = useNavigate()
     const controllerRef = useControllerRef()
@@ -90,7 +90,7 @@ export default function ({horaires, user, login, logout}) {
 
     return (
         <>
-            <Header />
+            <Header user={user} isAdmin={isAdmin}/>
             <Main className={'mainContainer container-fluid'}>
                 <FormDiv>
 

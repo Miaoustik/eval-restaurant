@@ -10,7 +10,7 @@ import useControllerRef from "../Hooks/useControllerRef";
 import {Link} from "react-router-dom";
 import LoadingFetch from "../Components/Ui/LoadingFetch";
 
-export default function ({ horaires, login, user, logout, error, loadingLogin, loadingLogout}) {
+export default function ({ horaires, login, user, logout, error, loadingLogin, loadingLogout, isAdmin}) {
 
 
     //TODO loading on login fetch
@@ -41,7 +41,7 @@ export default function ({ horaires, login, user, logout, error, loadingLogin, l
 
     return (
         <>
-            <Header />
+            <Header user={user} isAdmin={isAdmin} />
             <Main className={'mainContainer d-flex align-items-center min-h-100'}>
                 <Container>
                     <FormDiv>

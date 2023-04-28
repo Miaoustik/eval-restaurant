@@ -9,10 +9,12 @@ import styled from "styled-components";
 import nature from '../../images/nature-sprite.png';
 import useScrollToTop from "../Hooks/useScrollToTop";
 
-export default function ({ horaires, images = [] }) {
+export default function ({ horaires, user, isAdmin,  images = [] }) {
 
     /*need images [{title, url}]*/
     // load img setloading false on img onLoad
+
+
 
     useScrollToTop()
     const [index, setIndex] = useState(0);
@@ -23,13 +25,14 @@ export default function ({ horaires, images = [] }) {
 
     return (
         <>
-            <Header light={'1'}/>
+            <Header light={'1'} isAdmin={isAdmin} user={user}/>
             <Main>
                 <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
                     {images.map((e, k) => {
-                        /*need unique key !!
-                            import img manually
-                            loading until img load*/
+                        /*
+                            need unique key !!
+                            increment state imgloaded and if imgloaded state = number of img show it
+                         */
                         return (
                             <CarouselItem key={k} className={'h-100'}>
                                 <Img

@@ -7,7 +7,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -24,7 +23,10 @@ class MainController extends AbstractController
     {
         $user = $this->getUser();
 
-        return new JsonResponse(data: $user->getEmail());
+        return new JsonResponse(data: [
+            "email" => $user?->getEmail(),
+            "role" => $user?->getRoles()
+        ]);
     }
 
     #[Route(path: '/logout', name: 'app_logout', methods: ['GET'])]
@@ -52,6 +54,9 @@ class MainController extends AbstractController
     {
         $user = $this->getUser();
 
-        return new JsonResponse(data: $user?->getEmail());
+        return new JsonResponse(data: [
+            "email" => $user?->getEmail(),
+            "role" => $user?->getRoles()
+        ]);
     }
 }

@@ -10,6 +10,18 @@ export default function (controllerRef) {
     const [error, setError] = useState(null)
     const [loadingLogin, setLoadingLogin] = useState(false)
     const [loadingLogout, setLoadingLogout] = useState(false)
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    function setUserFetch (data) {
+        if (data.role !== null) {
+            data.role.forEach(e => {
+                if (e === 'ROLE_ADMIN') {
+                    setIsAdmin(true)
+                }
+            })
+        }
+        setUser(data.email)
+    }
 
     useEffect(() => {
         (async () => {
@@ -24,12 +36,7 @@ export default function (controllerRef) {
             try {
                 const response = await fetch('/api/user', fetchGetOptions)
                 const data = await response.json()
-
-                if (Object.keys(data).length === 0) {
-                    setUser(null)
-                } else {
-                    setUser(data)
-                }
+                setUserFetch(data)
             } catch (e) {
                 console.warn(e.message)
             } finally {
@@ -63,7 +70,13 @@ export default function (controllerRef) {
             try {
                 const response = await fetch('/api/login', fetchPostOptions)
                 const data = await response.json()
-                setUser(data)
+                setUser(data.email)
+                if (response.status === 401) {
+                    setError('Identifiants invalides.')
+                } else {
+                    setError(null)
+                    setUserFetch(data)
+                }
             } catch (e) {
                 console.warn(e.message)
             } finally {
@@ -96,5 +109,5 @@ export default function (controllerRef) {
         })()
     }
 
-    return [user, login, logout, error, loading, loadingLogin, loadingLogout]
+    return [user, login, logout, error, loading, loadingLogin, loadingLogout, isAdmin]
 }
