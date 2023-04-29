@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Repository\HoraireDayRepository;
+use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,5 +59,14 @@ class MainController extends AbstractController
             "email" => $user?->getEmail(),
             "role" => $user?->getRoles()
         ]);
+    }
+
+    #[Route(path: '/image', methods: ['GET'])]
+    public function getImages (ImageRepository $repository): Response
+    {
+        $images = $repository->findAll();
+        $data = $this->serializer->serialize(data: $images, format: JsonEncoder::FORMAT);
+
+        return new JsonResponse(data: $data, json: true);
     }
 }

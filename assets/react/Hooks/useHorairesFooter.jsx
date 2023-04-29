@@ -1,22 +1,30 @@
-import useFetch from "./useFetch";
+import {useEffect, useState} from "react";
+import httpApi from "../Components/Utils/httpApi";
 
 export default function (controllerRef) {
-    const [horaires, setHoraires, loading] = useFetch('/api/horaire', controllerRef, parseHoraires);
 
-    function getHoursMins(date) {
-        return date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
-    }
-
-    function buildHoraire (start = null, end = null) {
-        if (start !== null && end !== null) {
-            const horaireStart = new Date(start)
-            const horaireEnd = new Date(end)
-            return getHoursMins(horaireStart) + ' à ' + getHoursMins(horaireEnd)
-        }
-        return null
-    }
+    const http = httpApi(controllerRef)
+    
+    const [ horaires, setHoraires ] = useState(null)
+    const [ loading, setLoading] = useState(true)
+    const [ error, setError] = useState(null)
 
     function parseHoraires (data) {
+
+        function buildHoraire (start = null, end = null) {
+
+            function getHoursMins(date) {
+                return date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+            }
+
+            if (start !== null && end !== null) {
+                const horaireStart = new Date(start)
+                const horaireEnd = new Date(end)
+                return getHoursMins(horaireStart) + ' à ' + getHoursMins(horaireEnd)
+            }
+            return null
+        }
+
         return data.map(e => {
 
             let evening = buildHoraire(e.eveningStart, e.eveningEnd);
@@ -27,12 +35,25 @@ export default function (controllerRef) {
             }
 
             return {
-                dayName: e.dayName ,
+                dayName: e.dayName,
                 morning,
                 evening
             }
         })
     }
 
-    return [horaires, loading]
+    useEffect(() => {
+        http.get('/api/horaire')
+            .then(res => {
+                if (!res.ok) {
+                    setError(res.errorMessage)
+                } else {
+                    setError(null)
+                    setHoraires(parseHoraires(res.data))
+                }
+            })
+            .finally(() => setLoading(false))
+    }, [])
+
+    return [horaires, loading, error]
 }

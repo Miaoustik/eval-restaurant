@@ -1,50 +1,38 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import Header from "../Components/Header";
 import {Container} from "react-bootstrap";
 import useControllerRef from "../Hooks/useControllerRef";
+import httpApi from "../Components/Utils/httpApi";
 
 export default function ({isAdmin, user}) {
 
     const imgRef = useRef();
-
-
-
     const controllerRef = useControllerRef()
+    const http = httpApi(controllerRef)
 
-    const handleSubmit = async (e) => {
+    const [images, setImages] = useState([])
+
+    const handleSubmit = (e) => {
         e.preventDefault()
-
-        console.log(imgRef.current.files)
 
         const files = imgRef.current.files
         const data = new FormData()
-        data.append(files[0].name, files[0])
-        Object.keys(files).forEach(e => {
-            data.append(files[e].name, files[e])
-
+        Object.values(files).forEach(e => {
+            data.append(e.name, e)
         })
 
-        const fetchOptions = {
-            method: 'POST',
-            body: data,
-            signal: controllerRef.current.signal
-        }
+        http.post('api/admin/images/save', data)
+            .then(res => {
+                if (!res.ok) {
+                    console.log(res.errorMessage)
+                } else {
+                    setImages(res.data)
+                }
+            })
+    }
 
-        console.log(fetchOptions)
-
-        try {
-            const response = await fetch('/api/images', fetchOptions)
-            console.log(response.status)
-            const data = await response.json()
-            if (!response.ok) {
-                console.log('error', data)
-            } else {
-                console.log('ok', data)
-            }
-        } catch (e) {
-            console.warn('error', e.message)
-        }
-
+    const handleImageDelete = () => {
+        http.get('/api/admin/images/deletebdd')
     }
 
     return (
@@ -63,6 +51,7 @@ export default function ({isAdmin, user}) {
                         </div>
                         <button>Submit</button>
                     </form>
+                    <button onClick={handleImageDelete}>Supprimer image BDD</button>
                 </Container>
             </main>
         </>

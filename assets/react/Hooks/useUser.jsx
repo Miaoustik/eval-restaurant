@@ -1,113 +1,93 @@
 import {useEffect, useState} from "react";
-
-
-
-
+import httpApi from "../Components/Utils/httpApi";
 
 export default function (controllerRef) {
+
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(null)
     const [loadingLogin, setLoadingLogin] = useState(false)
     const [loadingLogout, setLoadingLogout] = useState(false)
+    const [loadingRegister, setLoadingRegister] = useState(false)
+    const [error, setError] = useState(null)
     const [isAdmin, setIsAdmin] = useState(false);
+    const http = httpApi(controllerRef)
 
-    function setUserFetch (data) {
-        if (data.role !== null) {
-            data.role.forEach(e => {
-                if (e === 'ROLE_ADMIN') {
-                    setIsAdmin(true)
-                }
-            })
+    function setUserFetch (res) {
+
+        if (!res.ok) {
+            setError(res.errorMessage)
+        } else {
+            setError(null)
+            const email = res.data.email
+            const roles = res.data.role
+
+            if (roles !== null) {
+                roles.forEach(e => {
+                    if (e === 'ROLE_ADMIN') {
+                        setIsAdmin(true)
+                    }
+                })
+            }
+            setUser(email)
         }
-        setUser(data.email)
     }
 
     useEffect(() => {
-        (async () => {
-            const fetchGetOptions = {
-                method: 'GET',
-                headers: {
-                    "Accept": 'application/json'
-                },
-                signal: controllerRef.current.signal
-            }
 
-            try {
-                const response = await fetch('/api/user', fetchGetOptions)
-                const data = await response.json()
-                setUserFetch(data)
-            } catch (e) {
-                console.warn(e.message)
-            } finally {
-                setLoading(false)
-            }
-        })()
+        setLoading(true)
 
-        return () => {
-            controllerRef.current.value
-        }
+        http.get('/api/user')
+            .then(res => setUserFetch(res))
+            .finally(() => setLoading(false))
+
     }, [])
 
-    const login = (username, password, controllerRef2 = null) => {
+    // !!!
 
-        (async () => {
-            setLoadingLogin(true)
+    const login = (data, controllerRef = null) => {
 
-            const fetchPostOptions = {
-                method: 'POST',
-                headers: {
-                    "Accept": 'application/json',
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify({
-                    username,
-                    password
-                }),
-                signal: controllerRef2 ? controllerRef2.current.signal : controllerRef.current.signal
-            }
+        setLoadingLogin(true)
+        http.post('/api/login', data, controllerRef)
+            .then(res => setUserFetch(res))
+            .finally(() => setLoadingLogin(false))
 
-            try {
-                const response = await fetch('/api/login', fetchPostOptions)
-                const data = await response.json()
-                setUser(data.email)
-                if (response.status === 401) {
-                    setError('Identifiants invalides.')
+    }
+
+    const logout = () => {
+        setLoadingLogout(true)
+        http.get('/api/logout')
+            .finally(() => setLoadingLogout(false))
+
+    }
+
+    const register = (data, controllerRef) => {
+        setLoadingRegister(true)
+        http.post('/api/inscription/inscrire', data, controllerRef)
+            .then(res => {
+                if (!res.ok) {
+                    setError(res.errorMessage)
                 } else {
                     setError(null)
-                    setUserFetch(data)
+                    login({
+                        username: data.username,
+                        password: data.password
+                    }, controllerRef)
                 }
-            } catch (e) {
-                console.warn(e.message)
-            } finally {
-                setLoadingLogin(false)
-            }
-        })()
+            })
+            .finally(() => setLoadingRegister(false))
+
     }
 
-    const logout = (controllerRef2 = null) => {
-
-        (async () => {
-            setLoadingLogout(true)
-
-            const fetchOptions = {
-                method: 'GET',
-                headers: {
-                    "Accept": "application/json"
-                },
-                signal: controllerRef2 ? controllerRef2.current.signal : controllerRef.current.signal
-            }
-
-            try {
-                await fetch('/api/logout', fetchOptions)
-                setUser(null)
-            } catch (e) {
-                console.warn(e.message)
-            } finally {
-                setLoadingLogout(false)
-            }
-        })()
+    return {
+        user,
+        login,
+        logout,
+        register,
+        error,
+        loading,
+        loadingLogin,
+        loadingLogout,
+        loadingRegister,
+        isAdmin
     }
-
-    return [user, login, logout, error, loading, loadingLogin, loadingLogout, isAdmin]
 }

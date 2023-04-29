@@ -1,43 +1,53 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import homepage from '../../images/Homepage-1920.jpg';
-import chef from '../../images/chef-1920.jpg';
-import vegan from '../../images/vegan-1920.jpg';
 import { Carousel, CarouselItem } from "react-bootstrap";
 import styled from "styled-components";
 import nature from '../../images/nature-sprite.png';
 import useScrollToTop from "../Hooks/useScrollToTop";
+import useControllerRef from "../Hooks/useControllerRef";
+import httpApi from "../Components/Utils/httpApi";
+export default function ({ horaires, user, isAdmin }) {
 
-export default function ({ horaires, user, isAdmin,  images = [] }) {
+    const controllerRef = useControllerRef()
+    const http = httpApi(controllerRef)
+    const [images, setImages] = useState([]);
 
-    /*need images [{title, url}]*/
-    // load img setloading false on img onLoad
+    const [index, setIndex] = useState(0);
 
+    useEffect(() => {
+        http.get('/api/image')
+            .then(res => {
+                if (!res.ok) {
+                    console.error(res.errorCode, res.errorMessage)
+                } else {
+                    setImages(res.data)
+                }
+            })
+    }, [])
 
+    useEffect(() => {
+        console.log(images)
+    }, [images])
 
     useScrollToTop()
-    const [index, setIndex] = useState(0);
 
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
     };
+
 
     return (
         <>
             <Header light={'1'} isAdmin={isAdmin} user={user}/>
             <Main>
                 <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
-                    {images.map((e, k) => {
-                        /*
-                            need unique key !!
-                            increment state imgloaded and if imgloaded state = number of img show it
-                         */
+                    {images.map(e => {
                         return (
-                            <CarouselItem key={k} className={'h-100'}>
+                            <CarouselItem key={e.id} className={'h-100'}>
                                 <Img
                                     className={'d-block w-100'}
-                                    src={e.url}
+                                    src={'/uploads/images/' + e.name}
                                     alt={e.title}
                                 />
                                 <Carousel.Caption >

@@ -9,14 +9,16 @@ import useControllerRef from "../Hooks/useControllerRef";
 import useScrollToTop from "../Hooks/useScrollToTop";
 import LoadingFetch from "../Components/Ui/LoadingFetch";
 
-export default function ({horaires, user, login, isAdmin}) {
+export default function ({horaires, error, user, register, loadingRegister, isAdmin}) {
 
     const navigate = useNavigate()
     const controllerRef = useControllerRef()
     const scrollToTop = useScrollToTop()
 
-    const [error, setError] = useState(null)
-    const [loading, setLoading] = useState(false)
+    const emailRef = useRef()
+    const passwordRef = useRef()
+    const conviveRef = useRef()
+    const allergenRef = useRef()
 
     useEffect(() => {
         if (user) {
@@ -24,68 +26,19 @@ export default function ({horaires, user, login, isAdmin}) {
         }
     }, [user])
 
-    useEffect(() => {
-        return () => {
-            controllerRef.current.abort()
-        }
-    }, [])
-
-    const emailRef = useRef()
-    const passwordRef = useRef()
-    const conviveRef = useRef()
-    const allergenRef = useRef()
-
-
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const username = emailRef.current.value
-        const password = passwordRef.current.value
+        scrollToTop(s => !s)
 
         const inscrireObj = {
-            username: username,
-            password: password,
+            username: emailRef.current.value,
+            password: passwordRef.current.value,
             convive: conviveRef.current.value,
             allergen: allergenRef.current.value
         }
 
-        const fetchPostOptions = {
-            method: 'POST',
-            headers: {
-                "Accept": 'application/json',
-                "Content-Type": 'application/json'
-            },
-            body: JSON.stringify(inscrireObj),
-            signal: controllerRef.current.signal
-        }
-
-        setLoading(true)
-        scrollToTop(s => !s)
-
-        try {
-            const response = await fetch('/api/inscription/inscrire', fetchPostOptions)
-            const data = await response.json()
-
-            switch (response.status) {
-                case 409 :
-                    setError(data.error)
-                    break
-                case 502 :
-                    setError(data.code + ' : ' + data.message)
-                    break
-                case 201 :
-                    setError(null)
-                    login(username, password, controllerRef)
-                    break
-                default:
-                    setError(data.code + ' : ' + data.message)
-            }
-
-        } catch (e) {
-            console.warn(e.message)
-        } finally {
-            setLoading(false)
-        }
+        register(inscrireObj, controllerRef)
     }
 
     return (
@@ -94,7 +47,7 @@ export default function ({horaires, user, login, isAdmin}) {
             <Main className={'mainContainer container-fluid'}>
                 <FormDiv>
 
-                    {loading
+                    {loadingRegister
                         ? <LoadingFetch message={'Création du compte en cours ...'} />
                         : (
                             <>

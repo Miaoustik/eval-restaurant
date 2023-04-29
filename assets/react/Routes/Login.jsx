@@ -12,24 +12,28 @@ import LoadingFetch from "../Components/Ui/LoadingFetch";
 
 export default function ({ horaires, login, user, logout, error, loadingLogin, loadingLogout, isAdmin}) {
 
-
-    //TODO loading on login fetch
-
     const controllerRef = useControllerRef()
     const setRefresh = useScrollToTop()
 
     useEffect(() => {
-        if (error || user) {
+        if (error || loadingLogin || loadingLogout) {
             setRefresh(prevState => !prevState)
         }
     }, [error, user])
 
     const emailRef = useRef();
-    const passwordRef = useRef()
+    const passwordRef = useRef();
 
     const handleLogin = (e) => {
         e.preventDefault()
-        login(emailRef.current.value, passwordRef.current.value, controllerRef)
+
+        const data = {
+            username: emailRef.current.value,
+            password: passwordRef.current.value
+        }
+
+        login(data, controllerRef)
+
         setRefresh(prev => !prev)
     }
 

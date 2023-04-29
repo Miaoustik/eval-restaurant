@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import Home from "./Routes/Home";
 import useHorairesFooter from "./Hooks/useHorairesFooter";
@@ -9,12 +9,25 @@ import Menu from "./Routes/Menu";
 import Carte from "./Routes/Carte";
 import Reserver from "./Routes/Reserver";
 import Admin from "./Routes/Admin";
+import useControllerRef from "./Hooks/useControllerRef";
 
 export default function Router () {
 
-    const abortRef = useRef(new AbortController())
-    const [horaires, loading] = useHorairesFooter(abortRef)
-    const [user, login, logout, error, loadingUser, loadingUserLogin, loadingUserLogout, isAdmin] = useUser(abortRef)
+    const controllerRef = useControllerRef()
+    const [horaires, loading] = useHorairesFooter(controllerRef)
+
+    const {
+        user,
+        loading: loadingUser,
+        login,
+        logout,
+        register,
+        loadingRegister,
+        loadingLogin,
+        loadingLogout,
+        error,
+        isAdmin
+    } = useUser(controllerRef)
 
 
     const router = createBrowserRouter([
@@ -35,8 +48,8 @@ export default function Router () {
                  login={login}
                  logout={logout}
                  error={error}
-                 loadingLogin={loadingUserLogin}
-                 loadingLogout={loadingUserLogout}
+                 loadingLogin={loadingLogin}
+                 loadingLogout={loadingLogout}
             />
         },
         {
@@ -44,8 +57,10 @@ export default function Router () {
             element: <Inscrire
                     horaires={horaires}
                     user={user}
-                    login={login}
+                    register={register}
+                    loadingRegister={loadingRegister}
                     isAdmin={isAdmin}
+                    error={error}
             />
         },
         {
