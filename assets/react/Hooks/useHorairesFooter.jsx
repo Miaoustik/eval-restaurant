@@ -1,13 +1,15 @@
 import {useEffect, useState} from "react";
-import httpApi from "../Components/Utils/httpApi";
+import useHoraireRepository from "./Repository/usehoraireRepository";
 
 export default function (controllerRef) {
-
-    const http = httpApi(controllerRef)
     
-    const [ horaires, setHoraires ] = useState(null)
-    const [ loading, setLoading] = useState(true)
-    const [ error, setError] = useState(null)
+    const {
+        horaires,
+        repository
+    } = useHoraireRepository(controllerRef)
+
+    const [ loading, setLoading ] = useState(true)
+
 
     function parseHoraires (data) {
 
@@ -43,17 +45,9 @@ export default function (controllerRef) {
     }
 
     useEffect(() => {
-        http.get('/api/horaire')
-            .then(res => {
-                if (!res.ok) {
-                    setError(res.errorMessage)
-                } else {
-                    setError(null)
-                    setHoraires(parseHoraires(res.data))
-                }
-            })
+        repository.getAllParsed(parseHoraires)
             .finally(() => setLoading(false))
     }, [])
 
-    return [horaires, loading, error]
+    return [horaires, loading]
 }

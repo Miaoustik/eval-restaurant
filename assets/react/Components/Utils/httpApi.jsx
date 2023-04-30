@@ -58,12 +58,14 @@ export default function (controllerRef) {
 
         const fetchOptions = {
             ...postOptions,
-            body: JSON.stringify(data),
             signal: controller?.current.signal ?? controllerRef.current.signal
         }
 
         if (!file) {
             fetchOptions.headers["Content-Type"] = 'application/json'
+            fetchOptions.body = JSON.stringify(data)
+        } else {
+            fetchOptions.body = data
         }
 
         return fetchFunc(url, fetchOptions)

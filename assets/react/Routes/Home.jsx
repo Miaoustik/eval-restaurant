@@ -6,29 +6,13 @@ import styled from "styled-components";
 import nature from '../../images/nature-sprite.png';
 import useScrollToTop from "../Hooks/useScrollToTop";
 import useControllerRef from "../Hooks/useControllerRef";
-import httpApi from "../Components/Utils/httpApi";
+import useImagesHome from "../Hooks/useImagesHome";
 export default function ({ horaires, user, isAdmin }) {
 
     const controllerRef = useControllerRef()
-    const http = httpApi(controllerRef)
-    const [images, setImages] = useState([]);
+    const images = useImagesHome(controllerRef)
 
     const [index, setIndex] = useState(0);
-
-    useEffect(() => {
-        http.get('/api/image')
-            .then(res => {
-                if (!res.ok) {
-                    console.error(res.errorCode, res.errorMessage)
-                } else {
-                    setImages(res.data)
-                }
-            })
-    }, [])
-
-    useEffect(() => {
-        console.log(images)
-    }, [images])
 
     useScrollToTop()
 

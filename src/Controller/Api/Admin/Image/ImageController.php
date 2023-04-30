@@ -34,6 +34,8 @@ class ImageController extends AbstractController
         /** @var UploadedFile[] $images */
         $images = $request->files;
 
+
+
         foreach ($images as $image) {
 
             $originalName = pathinfo( $image->getClientOriginalName(), PATHINFO_FILENAME);
@@ -75,11 +77,17 @@ class ImageController extends AbstractController
     public function deleteAllBdd (ImageRepository $repository, EntityManagerInterface $manager): Response
     {
         $images = $repository->findAll();
-        foreach ($images as $image) {
-            $repository->remove($image);
+        try {
+            foreach ($images as $image) {
+                unlink($this->getParameter('uploads_images') . '/' . $image->getName());
+                $repository->remove($image);
+            }
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: ["error" => $e->getMessage()], status: 500);
         }
-        $manager->flush();
-        return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+
 
     }
 }
