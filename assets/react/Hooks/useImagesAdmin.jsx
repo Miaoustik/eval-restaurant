@@ -3,30 +3,19 @@ import useImageRepository from "./Repository/useImageRepository";
 
 export default function (controllerRef) {
 
-    const imgRef = useRef();
-
     const {
         images,
         repository
     } = useImageRepository(controllerRef)
-
+    const [loading, setLoading] = useState(true)
     const [refreshImg, setRefreshImg] = useState(false)
 
 
     useEffect(() => {
+        setLoading(true)
         repository.getAll()
+            .finally(() => setLoading(false))
     }, [refreshImg])
-
-    const handleSave = (e) => {
-        e.preventDefault()
-
-        const files = imgRef.current.files
-        const data = new FormData()
-        Object.values(files).forEach(e => {
-            data.append(e.name, e)
-        })
-        repository.save(data)
-    }
 
     const handleDeleteAll = () => {
         repository.deleteAll()
@@ -37,8 +26,7 @@ export default function (controllerRef) {
 
     return {
         images,
-        imgRef,
-        handleSave,
-        handleDeleteAll
+        handleDeleteAll,
+        loading
     }
 }
