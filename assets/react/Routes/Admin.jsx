@@ -5,20 +5,18 @@ import useControllerRef from "../Hooks/useControllerRef";
 import useImages from "../Hooks/useImagesAdmin";
 import styled, {keyframes} from "styled-components";
 import LoadingFetch from "../Components/Ui/LoadingFetch";
+import ImageFullScreen from "../Components/Ui/ImageFullScreen";
+import useImagesFullScreen from "../Hooks/useImagesFullScreen";
+import AnimateOnHeight from "../Components/Ui/AnimateOnHeight";
+import useAnimateOnHeight from "../Hooks/useAnimateOnHeight";
 
 export default function ({isAdmin, user}) {
 
     const controllerRef = useControllerRef()
-    const [clickShowState, setClickShowState] = useState({})
-    const clickShowRef = useRef([])
-    const newImageShowRef = useRef([])
     const [newImages, setNewImages] = useState([])
     const [input, setInput] = useState('')
     const fileInputRef = useRef()
-
-    const handleInput = (e) => {
-        setInput(e.target.value)
-    }
+    const newImagesInputRef = useRef([])
 
     const {
         images,
@@ -26,29 +24,41 @@ export default function ({isAdmin, user}) {
         loading: loadingImage
     } = useImages(controllerRef)
 
-    const handleShow = (e) => {
-        setClickShowState(prevState => {
-            const id = e.target.getAttribute('data-id')
-            const newState = {...prevState}
-            newState[id].show = !newState[id].show
-            return newState
-        })
-    }
+    const {
+        showImgState,
+        handleShowImage,
+        handleCloseImage
+    } = useImagesFullScreen(images, loadingImage)
+
+    const {state, toggleShow, Refs, layoutEffect} = useAnimateOnHeight()
+
+    const {
+        showImgState: showNewImgState,
+        handleShowImage: handleShowNewImage,
+        handleCloseImage: handleCloseNewImage
+    } = useImagesFullScreen(images, loadingImage)
+
+    useLayoutEffect(() => {
+        if (!loadingImage) {
+            layoutEffect()
+        }
+    }, [loadingImage])
 
     const handleAddImage = (e) => {
         e.preventDefault()
         fileInputRef.current.click()
     }
+    const handleInput = (e) => {
+        setInput(e.target.value)
+    }
 
     useEffect(() => {
         if (input !== '') {
 
-            // !!!!!!!!!!!
             const file = fileInputRef.current.files[0]
             const reader = new FileReader()
             reader.onloadend = e => {
                 setNewImages(prevState => {
-
                     const newState = [...prevState]
                     let id = null
                     if (newState.length === 0) {
@@ -67,49 +77,29 @@ export default function ({isAdmin, user}) {
                 setInput('')
             }
             reader.readAsDataURL(file)
-
-            console.log(input)
-            console.log(fileInputRef.current.files[0])
-
         }
     }, [input])
 
-    const handleShowImage = (e) => {
-        setClickShowState(s => {
-            const newState = {...s}
-            const id = e.target.getAttribute('data-id')
-            newState[id].showImage = true
-            document.body.style.overflow = "hidden";
-            return newState
-        })
-    }
-
-    const handleCloseImage = (e) => {
-        setClickShowState(s => {
-            const newState = {...s}
-            const id = e.target.getAttribute('data-id')
-            newState[id].showImage = false
-            document.body.style.overflow = "auto";
-            return newState
-        })
-    }
-
-    useLayoutEffect(() => {
-        if (images.length > 0 && !loadingImage) {
-            setClickShowState(() => {
-                const newState = {}
-                clickShowRef.current.forEach(e => {
-                    const id = e.getAttribute('data-id')
-                    newState[id] = {
-                        height: e.clientHeight,
-                        show: false,
-                        showImage: false
-                    }
-                })
-                return newState
+    const deleteNew = (e) => {
+        e.preventDefault()
+        const id = e.target.getAttribute('data-id')
+        setNewImages(prevState => {
+            const newState = [...prevState]
+            newState.forEach((e, k) => {
+                if (e.id == id) {
+                    newState.splice(k, 1)
+                }
             })
-        }
-    }, [images])
+            return newState
+        })
+    }
+
+    const handleNewSubmit = (e) => {
+        e.preventDefault()
+        console.log(newImages, newImagesInputRef.current)
+        //!!!!!!!
+    }
+
 
 
     return (
@@ -127,38 +117,35 @@ export default function ({isAdmin, user}) {
                                     {images.map(e => {
                                         return (
                                             <li key={e.id}>
-                                                <LiDiv className={'shadow1'}>
-                                                    <ButtonShow show={clickShowState[e.id]?.show === undefined  ? '3' : (clickShowState[e.id]?.show ? '1' : '0')} data-id={e.id} onClick={handleShow}>{e.name}</ButtonShow>
-                                                    <ClickShow ref={(el) => clickShowRef.current[e.id] = el} data-id={e.id} height={clickShowState[e.id]?.height} show={clickShowState[e.id]?.show === undefined  ? '3' : (clickShowState[e.id]?.show ? '1' : '0')}>
-                                                        <ButtonOptionsImages1 data-id={e.id} onClick={handleShowImage} show={clickShowState[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2'}>Voir</ButtonOptionsImages1>
-                                                        <ButtonOptionsImages2 show={clickShowState[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2'}>Modifier le titre</ButtonOptionsImages2>
-                                                        <ButtonOptionsImages3 show={clickShowState[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2 mb-4'}>Supprimer</ButtonOptionsImages3>
-                                                    </ClickShow>
-                                                </LiDiv>
-                                                <ImgDiv role={'button'} onClick={handleCloseImage}  showImage={clickShowState[e.id]?.showImage === undefined ? '3' : (clickShowState[e.id].showImage ? '1' : '0')} >
-                                                    <Img src={"/uploads/images/" + e.name } alt={e.title} data-id={e.id}/>
-                                                </ImgDiv>
-                                            </li>)
+                                                <AnimateOnHeight ref={Refs} toggleShow={toggleShow} state={state} name={e.name} id={e.id}>
+                                                    <ButtonOptionsImages1 data-id={e.id} onClick={handleShowImage} show={state[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2'}>Voir</ButtonOptionsImages1>
+                                                    <ButtonOptionsImages2 show={state[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2'}>Modifier le titre</ButtonOptionsImages2>
+                                                    <ButtonOptionsImages3 show={state[e.id]?.show ? '1' : '0'} className={'btn btn-primary w-100 mt-2 mb-4'}>Supprimer</ButtonOptionsImages3>
+                                                </AnimateOnHeight>
+                                                <ImageFullScreen image={e} show={showImgState[e.id]} handleCloseImage={handleCloseImage} />
+                                            </li>
+                                        )
                                     })}
                                 </ul>
                                 {newImages.length > 0 && <h3>Nouvelles images</h3>}
-                                <form>
+                                <form onSubmit={handleNewSubmit}>
                                     {newImages.map(e => {
                                         return (
                                             <NewDiv key={e.id} className="mb-3">
                                                 <p>{e.file.name}</p>
+                                                <button data-id={e.id} className={'btn btn-primary w-100 mb-4'} onClick={handleShowNewImage}>Voir</button>
                                                 <label className={'mb-2'} htmlFor={'imageInput' + e.id}>Titre de l'image : </label>
-                                                <input id={'imageInput' + e.id} className={'form-control border-primary'} type={'text'} />
-                                                <ImgDiv>
-                                                    <Img className={'w-100'} src={e.base64} alt={e.name}/>
-                                                </ImgDiv>
+                                                <input ref={ el => newImagesInputRef.current[e.id] = el} id={'imageInput' + e.id} className={'form-control border-primary'} type={'text'} />
+                                                <button data-id={e.id} onClick={deleteNew} className={'btn btn-primary w-100 mt-4'}>Annuler</button>
+                                                <ImageFullScreen image={e} show={showNewImgState[e.id]} handleCloseImage={handleCloseNewImage} base64={e.base64}/>
                                             </NewDiv>
                                         )
                                     })}
 
                                     <Input ref={fileInputRef} value={input} onChange={handleInput} type="file" />
-                                    <button onClick={handleAddImage} className={'btn btn-primary'}>Ajouter une image</button>
-                                    <button type={'submit'} className={'btn btn-primary'}>Valider</button>
+                                    <button onClick={handleAddImage} className={'btn btn-primary w-100 mb-4'}>Ajouter une image</button>
+
+                                    <button type={'submit'} className={'btn btn-primary w-100 mb-4'}>Valider</button>
                                 </form>
                                 <button onClick={handleDeleteAll}>Supprimer toutes les images</button>
                             </>
@@ -226,22 +213,6 @@ const NewDiv = styled(LiDiv)`
     padding: 1rem;
 `
 
-const ButtonShow = styled.button`
-    background-color: transparent;
-    border: none;
-    width: 100%;
-    text-align: start;
-    padding: 1rem;
-    border: none; 
-`
-
-const ClickShow = styled.div`
-    padding-left: 1rem;
-    padding-right: 1rem;
-    overflow: hidden;
-    max-height: ${props => props.show === '3' ? 'auto' : (props.show === '0' ? '0' : (props.height.toString() + 'px'))};
-    transition: max-height 0.8s ease;
-`
 const opacity = keyframes`
     from {
         opacity: 0;
