@@ -74,7 +74,7 @@ class ImageController extends AbstractController
     }
 
     #[Route(path: '/deletebdd', methods: ['GET'])]
-    public function deleteAllBdd (ImageRepository $repository, EntityManagerInterface $manager): Response
+    public function deleteAllBdd (ImageRepository $repository): Response
     {
         $images = $repository->findAll();
         try {
@@ -82,12 +82,63 @@ class ImageController extends AbstractController
                 unlink($this->getParameter('uploads_images') . '/' . $image->getName());
                 $repository->remove($image);
             }
-            $manager->flush();
+            $this->manager->flush();
             return new JsonResponse(status: Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
             return new JsonResponse(data: ["error" => $e->getMessage()], status: 500);
         }
+    }
 
+    #[Route(path: '/delete', methods: ['POST'])]
+    public function delete (Request $request): Response
+    {
+        $data = json_decode($request->getContent());
+        $id = $data->id;
+
+        $image = $this->repository->find($id);
+
+
+        try {
+            $this->manager->remove($image);
+            $this->manager->flush();
+            return new JsonResponse(data: [
+                'id' => $id
+            ]);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ], status: Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    #[Route(path: '/title', methods: ['POST'])]
+    public function updateTitle (Request $request): Response
+    {
+        $data = json_decode($request->getContent());
+
+        $image = $this->repository->find($data->id);
+        $image->setTitle($data->title);
+
+        try {
+            $this->manager->flush();
+            return new JsonResponse([
+                'title' => $image->getTitle()
+            ]);
+        } catch (\Exception $e){
+            return new JsonResponse(
+                data: [
+                    'errorCode' => $e->getCode(),
+                    'errorMessage' => $e->getMessage()
+                ],
+                status: Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    private function debug ( $data ): Response
+    {
+        return new JsonResponse(data: $this->serializer->serialize($data, JsonEncoder::FORMAT), json: true );
 
     }
 }

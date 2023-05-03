@@ -5,7 +5,8 @@ export default function (controllerRef) {
 
     const {
         images,
-        repository
+        repository,
+        setImages
     } = useImageRepository(controllerRef)
     const [loading, setLoading] = useState(true)
     const [refreshImg, setRefreshImg] = useState(false)
@@ -27,6 +28,9 @@ export default function (controllerRef) {
     return {
         images,
         handleDeleteAll,
-        loading
+        loading,
+        repository,
+        setImages,
+        setRefreshImg
     }
 }

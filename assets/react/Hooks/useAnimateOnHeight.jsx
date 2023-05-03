@@ -29,5 +29,5 @@ export default function () {
         })
     }
 
-    return {state, toggleShow, Refs, layoutEffect}
+    return {state, toggleShow, Refs, layoutEffect, setState}
 }

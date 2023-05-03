@@ -23,14 +23,27 @@ export default function (controllerRef) {
         return http.get('/api/admin/images/deletebdd')
     }
 
+    const deleteById = (id) => {
+        return http.post('/api/admin/images/delete', {
+            id
+        })
+    }
+
+    const updateTitle = (data) => {
+        return http.post('/api/admin/images/title', data)
+    }
+
     const repository = {
         getAll,
         save,
-        deleteAll
+        deleteAll,
+        updateTitle,
+        deleteById
     }
 
     return {
         images,
-        repository
+        repository,
+        setImages
     }
 }
