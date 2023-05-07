@@ -36,15 +36,16 @@ class ImageController extends AbstractController
 
 
 
-        foreach ($images as $image) {
-
+        foreach ($images as $key => $image) {
+            $id = substr($key, -1);
+            //return $this->debug($request->request->get('title-' . $id));
             $originalName = pathinfo( $image->getClientOriginalName(), PATHINFO_FILENAME);
             $safeName = $slugger->slug($originalName);
             $newName = $safeName . '-' . uniqid() . '.' . $image->guessExtension();
 
             $newImage = (new Image())
                 ->setName($newName)
-                ->setTitle('Titre de test');
+                ->setTitle($request->request->get('title-' . $id));
 
             try {
                 $image->move(
@@ -54,7 +55,7 @@ class ImageController extends AbstractController
                 $this->manager->persist($newImage);
             } catch (\Exception $e) {
                 return new JsonResponse(data: [
-                    'error' => $e->getMessage()
+                    'error' => $this->serializer->serialize(data: $e, format: JsonEncoder::FORMAT)
                 ], status: 500);
             }
         }

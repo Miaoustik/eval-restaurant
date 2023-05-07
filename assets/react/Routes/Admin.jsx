@@ -12,8 +12,15 @@ import useAnimateOnHeight from "../Hooks/useAnimateOnHeight";
 import InputWithRef from "../Components/Ui/InputWithRef";
 import useCurrentImages from "../Hooks/Admin/useCurrentImages";
 import CurrentImages from "../Components/Admin/Images/CurrentImages";
+import useNewImages from "../Hooks/Admin/useNewImages";
+import NewImages from "../Components/Admin/Images/NewImages";
+import UseAnimateOnHeight from "../Hooks/useAnimateOnHeight";
+import HeightTransition from "../Components/Ui/HeightTransition";
+import Footer from "../Components/Footer";
+import useHorairesFooter from "../Hooks/useHorairesFooter";
+import useHeightTransition from "../Hooks/useHeightTransition";
 
-export default function ({isAdmin, user}) {
+export default function ({isAdmin, user, horaires}) {
 
     const controllerRef = useControllerRef()
 
@@ -26,48 +33,52 @@ export default function ({isAdmin, user}) {
         setRefreshImg
     } = useImages(controllerRef)
 
+    const {show, toggleShow} = useHeightTransition()
+
+
     const propsCurrent = useCurrentImages(images, loadingImage, repository, setImages, setRefreshImg)
+    const propsNew = useNewImages(images, loadingImage, repository, propsCurrent.setInputLoaded)
+
+
 
     return (
         <>
             <Header isAdmin={isAdmin} user={user}/>
             <main className={'mainContainer'} >
                 <Container fluid={true}>
-                    <h2>Gestions des images</h2>
+                    <h2 className={'merri mt-4 text-primary '}>Gestions des images</h2>
                     {loadingImage !== false
                         ? (<LoadingFetch message={'Chargement des images...'} />)
                         : (
                             <>
                                 <CurrentImages {...propsCurrent} />
-                                <button onClick={handleDeleteAll}>Supprimer toutes les images</button>
+
+                                {propsNew.uploading
+                                    ? (<LoadingFetch message={'Upload des images...'} />)
+                                    : (<NewImages {...propsNew} />)
+                                }
+
+                                <button data-id={'1'} className={'btn w-100 shadow1 mb-4 ' + (show['1'] ? 'btn-success' : 'btn-danger')} onClick={toggleShow}>{show['1'] ? 'Annuler' : 'Supprimer toutes les images'}</button>
+                                <HeightTransition show={show['1']} className={'mb-5'}>
+                                    <p className={"px-2"}>Êtes-vous sûr ?</p>
+                                    <button className={'btn btn-danger w-100 shadow1'} onClick={handleDeleteAll}>Confirmer</button>
+                                </HeightTransition>
                             </>
                         )
                     }
                 </Container>
             </main>
+            <Footer horaires={horaires} />
         </>
     )
 }
 
 
 
-const Input = styled.input`
-    display: none;
-`
 
 
 
 
-
-const LiDiv = styled.div`
-    margin-bottom: 1rem;
-    border-radius: 15px;
-    border: solid 1px var(--bs-primary)
-`
-
-const NewDiv = styled(LiDiv)`
-    padding: 1rem;
-`
 
 
 

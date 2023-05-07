@@ -8,10 +8,12 @@ export default function () {
         setState(() => {
             const newState = {}
             Refs.current.forEach(e => {
-                const id = e.getAttribute('data-id')
-                newState[id] = {
-                    height: e.clientHeight,
-                    show: false
+                const id = e?.getAttribute('data-id')
+                if (id) {
+                    newState[id] = {
+                        height: e.clientHeight,
+                        show: false
+                    }
                 }
             })
             return newState

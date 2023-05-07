@@ -92,6 +92,7 @@ export default function Router () {
             element: <Admin
                 user={user}
                 isAdmin={isAdmin}
+                horaires={horaires}
             />
         }
     ])

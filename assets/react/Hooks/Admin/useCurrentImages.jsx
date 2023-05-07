@@ -1,20 +1,15 @@
 import {useLayoutEffect, useState} from "react";
-import useAnimateOnHeight from "../useAnimateOnHeight";
 import useImagesFullScreen from "../useImagesFullScreen";
+import useHeightTransition from "../useHeightTransition";
 
 export default function (images, loadingImage, repository, setImages, setRefreshImg) {
     const [titlesState, setTitlesState] = useState({})
-    const {state, toggleShow, Refs, layoutEffect, setState} = useAnimateOnHeight()
-    const {state: stateModify, toggleShow: toggleShowModify, Refs: RefsModify, layoutEffect: layoutEffectModify, setState: setStateModify} = useAnimateOnHeight()
     const [inputLoaded, setInputLoaded] = useState(false)
-    const {state: stateTitle, Refs: RefsTitle, layoutEffect: layoutEffectTitle, setState: setStateTitle, toggleShow: toggleShowTitle} = useAnimateOnHeight()
-    const {
-        state: stateDelete,
-        setState: setStateDelete,
-        toggleShow: toggleShowDelete,
-        layoutEffect: layoutEffectDelete,
-        Refs: RefsDelete
-    } = useAnimateOnHeight()
+    const {show: show, toggleShow: toggleShow, setShow: setShow} = useHeightTransition()
+    const {show: showMain, toggleShow: toggleShowMain, setShow: setShowMain} = useHeightTransition()
+    const {show: showModify, toggleShow: toggleShowModify, setShow: setShowModify} = useHeightTransition()
+    const {show: showTitle, setShow: setShowTitle} = useHeightTransition()
+    const {show: showDelete, toggleShow: toggleShowDelete, setShow: setShowDelete} = useHeightTransition()
 
     const {
         showImgState,
@@ -24,6 +19,7 @@ export default function (images, loadingImage, repository, setImages, setRefresh
 
     useLayoutEffect(() => {
         if (images.length > 0 && !loadingImage) {
+            setInputLoaded(false)
             setTitlesState(() => {
                 const news = {}
                 images.forEach(e => {
@@ -31,10 +27,6 @@ export default function (images, loadingImage, repository, setImages, setRefresh
                 })
                 return news
             })
-            layoutEffect()
-            layoutEffectModify()
-            layoutEffectTitle()
-            layoutEffectDelete()
             setInputLoaded(true)
         }
     }, [images])
@@ -49,37 +41,32 @@ export default function (images, loadingImage, repository, setImages, setRefresh
             return news
         })
 
-        setStateTitle(prev => {
+        setShowTitle(prev => {
             const news = {...prev}
-            news[id].show = e.target.value !== '';
+            news[id] = e.target.value !== '';
             return news
         })
     }
 
     const customToggleShow = (e) => {
         e.preventDefault()
-        toggleShow(e)
+        toggleShowMain(e)
+
         const id = e.target.getAttribute('data-id')
 
-        if (state[id].show === true) {
-
-            setStateTitle(prev => {
+        function setFalseFunc (setter, id) {
+            setter(prev => {
                 const news = {...prev}
-                news[id].show = false
+                news[id] = false
                 return news
             })
+        }
 
-            setStateModify(prev => {
-                const news = {...prev}
-                news[id].show = false
-                return news
-            })
+        if (showMain[id] === true) {
 
-            setStateDelete(prev => {
-                const news = {...prev}
-                news[id].show = false
-                return news
-            })
+            setFalseFunc(setShowTitle, id)
+            setFalseFunc(setShowModify, id)
+            setFalseFunc(setShowDelete, id)
 
             setTitlesState(prev => {
                 const news = {...prev}
@@ -121,10 +108,10 @@ export default function (images, loadingImage, repository, setImages, setRefresh
             return news
         })
 
-        if (stateModify[id].show) {
-            setStateTitle(prevState => {
+        if (showTitle[id]) {
+            setShowTitle(prevState => {
                 const news = {...prevState}
-                news[id].show = false
+                news[id] = false
                 return news
             })
         }
@@ -150,6 +137,11 @@ export default function (images, loadingImage, repository, setImages, setRefresh
                     })
                     return news
                 })
+                setShowModify(prev => {
+                    const news = {...prev}
+                    news[id] = false
+                    return news
+                })
             } else {
                 console.log(res.data.errorCode, res.data.errorMessage)
             }
@@ -157,12 +149,7 @@ export default function (images, loadingImage, repository, setImages, setRefresh
     }
 
     return {
-        state,
-        stateModify,
-        toggleShow: customToggleShow,
-        toggleShowModify,
-        Refs,
-        RefsModify,
+        toggleShowMain: customToggleShow,
         showImgState,
         handleShowImage,
         handleCloseImage,
@@ -172,13 +159,14 @@ export default function (images, loadingImage, repository, setImages, setRefresh
         loadingImage,
         titlesState,
         inputLoaded,
-        stateTitle,
-        RefsTitle,
-        toggleShowTitle,
         handleSubmitTitle,
-        stateDelete,
-        RefsDelete,
         handleDeleteBtn,
-        handleDeleteImage
+        handleDeleteImage,
+        showMain,
+        showModify,
+        showTitle,
+        showDelete,
+        show,
+        toggleShow
     }
 }
