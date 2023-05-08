@@ -1,22 +1,21 @@
 import {useEffect, useLayoutEffect, useRef, useState} from "react";
 import useImagesFullScreen from "../useImagesFullScreen";
 import useHeightTransition from "../useHeightTransition";
+import useFlashAlert from "../useFlashAlert";
 
 export default function (images, loadingImage, repository, setInputLoaded) {
 
-    const timerRef = useRef(null)
     const fileInputRef = useRef()
     const newImagesInputRef = useRef([])
     const [newImages, setNewImages] = useState([])
     const [input, setInput] = useState('')
     const [uploading, setUploading] = useState(false)
     const {show, toggleShow, setShow, start} = useHeightTransition( true)
+    const [unset, setUnset] = useState(null)
+    const {show: showValidate, setShow: setShowValidate} = useHeightTransition()
+    const [submitted, setSubmitted] = useState(false)
 
-    useEffect(() => {
-        return () => {
-            clearTimeout(timerRef.current)
-        }
-    })
+    const {showAlert, setShowAlert, handleCloseFlash} = useFlashAlert()
 
     const {
         showImgState: showNewImgState,
@@ -62,6 +61,12 @@ export default function (images, loadingImage, repository, setInputLoaded) {
     }, [input])
 
     useLayoutEffect(() => {
+        if (submitted === true) {
+            setShowAlert(true)
+        }
+    }, [submitted])
+
+    useLayoutEffect(() => {
         if (newImages.length > 0) {
             setShow(prev => {
                 const id = newImages[newImages.length - 1].id
@@ -69,9 +74,31 @@ export default function (images, loadingImage, repository, setInputLoaded) {
                 news[id] = true
                 return news
             })
-
+            setShowValidate(true)
+        } else {
+            setShowValidate(false)
         }
     }, [newImages])
+
+    useEffect(() => {
+        let timer = null
+        if (unset) {
+            timer = setTimeout(() => {
+                setNewImages(prevState => {
+                    const newState = [...prevState]
+                    newState.forEach((e, k) => {
+                        if (e.id == unset) {
+                            newState.splice(k, 1)
+                        }
+                    })
+                    setUnset(null)
+                    return newState
+                })
+            }, 500)
+        }
+
+        return () => clearTimeout(timer)
+    }, [unset])
 
 
     const deleteNew = async (e) => {
@@ -83,22 +110,7 @@ export default function (images, loadingImage, repository, setInputLoaded) {
             news[id] = false
             return news
         })
-
-        //TODO timeOut not working
-
-        timerRef.current = setTimeout(() => {
-            console.log('hello')
-            setNewImages(prevState => {
-                console.log(id, e.id)
-                const newState = [...prevState]
-                newState.forEach((e, k) => {
-                    if (e.id == id) {
-                        newState.splice(k, 1)
-                    }
-                })
-                return newState
-            })
-        }, 500)
+        setUnset(id)
     }
 
     const handleNewSubmit = (e) => {
@@ -111,6 +123,11 @@ export default function (images, loadingImage, repository, setInputLoaded) {
         })
         setInputLoaded(false)
         repository.save(data)
+            .then((res) => {
+                if (res.ok) {
+                    setSubmitted(true)
+                }
+            })
             .finally(() => {
                 setNewImages([])
                 setUploading(false)
@@ -132,6 +149,10 @@ export default function (images, loadingImage, repository, setInputLoaded) {
         show,
         setShow,
         toggleShow,
-        start
+        start,
+        showValidate,
+        submitted,
+        showAlert,
+        handleCloseFlash
     }
 }

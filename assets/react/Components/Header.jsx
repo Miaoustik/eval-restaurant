@@ -26,7 +26,10 @@ export default function ({ light = '0', user, isAdmin }) {
                         <OffCanvasA light={light} to={'/reserver'} className={'mb-2'}>Réserver</OffCanvasA>
                         <OffCanvasA light={light} to={'/login'} className={'mb-2'}>Se connecter</OffCanvasA>
                         {isAdmin &&
-                            <OffCanvasA light={light} to={'/admin'} className={'mb-2'}>Gestion</OffCanvasA>
+                            <>
+                                <OffCanvasA light={light} to={'/admin/image'} className={'mb-2'}>Gestion des images</OffCanvasA>
+                                <OffCanvasA light={light} to={'/admin/carte'} className={'mb-2'}>Gestion de la carte</OffCanvasA>
+                            </>
                         }
 
                         {user === null &&

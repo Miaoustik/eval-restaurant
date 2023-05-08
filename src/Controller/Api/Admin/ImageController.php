@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\Api\Admin\Image;
+namespace App\Controller\Api\Admin;
 
 use App\Entity\Image;
 use App\Repository\ImageRepository;
@@ -100,6 +100,7 @@ class ImageController extends AbstractController
 
 
         try {
+            unlink($this->getParameter('uploads_images') . '/' . $image->getName());
             $this->manager->remove($image);
             $this->manager->flush();
             return new JsonResponse(data: [

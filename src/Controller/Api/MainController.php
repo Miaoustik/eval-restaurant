@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api;
 
+use App\Repository\CategoryRepository;
 use App\Repository\HoraireDayRepository;
 use App\Repository\ImageRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -68,5 +69,16 @@ class MainController extends AbstractController
         $data = $this->serializer->serialize(data: $images, format: JsonEncoder::FORMAT);
 
         return new JsonResponse(data: $data, json: true);
+    }
+
+    #[Route(path: '/carte', methods: ['GET'])]
+    public function getCarte (CategoryRepository $categoryRepository): Response
+    {
+        $categories = $categoryRepository->findAllEager();
+
+        $json = $this->serializer->serialize($categories, JsonEncoder::FORMAT, [
+            'groups' => ['GET_CARTE']
+        ]);
+        return new JsonResponse(data: $json, json: true);
     }
 }

@@ -39,6 +39,16 @@ class CategoryRepository extends ServiceEntityRepository
         }
     }
 
+    public function findAllEager(): array
+    {
+        return $this->createQueryBuilder('c')
+            ->select('c', 'd')
+            ->leftJoin('c.dishes', 'd')
+            ->getQuery()
+            ->getResult();
+    }
+
+
 //    /**
 //     * @return Category[] Returns an array of Category objects
 //     */

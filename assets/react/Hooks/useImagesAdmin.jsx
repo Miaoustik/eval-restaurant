@@ -10,6 +10,7 @@ export default function (controllerRef) {
     } = useImageRepository(controllerRef)
     const [loading, setLoading] = useState(true)
     const [refreshImg, setRefreshImg] = useState(false)
+    const [loadingDelete, setLoadingDelete] = useState(false)
 
 
     useEffect(() => {
@@ -19,10 +20,12 @@ export default function (controllerRef) {
     }, [refreshImg])
 
     const handleDeleteAll = () => {
+        setLoadingDelete(true)
         repository.deleteAll()
             .then(() => {
                 setRefreshImg(s => !s)
             })
+            .finally(() => setLoadingDelete(false))
     }
 
     return {
@@ -31,6 +34,7 @@ export default function (controllerRef) {
         loading,
         repository,
         setImages,
-        setRefreshImg
+        setRefreshImg,
+        loadingDelete
     }
 }

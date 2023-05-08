@@ -142,6 +142,11 @@ export default function (images, loadingImage, repository, setImages, setRefresh
                     news[id] = false
                     return news
                 })
+                setShowTitle(prev => {
+                    const news = {...prev}
+                    news[id] = false
+                    return news
+                })
             } else {
                 console.log(res.data.errorCode, res.data.errorMessage)
             }
@@ -167,6 +172,7 @@ export default function (images, loadingImage, repository, setImages, setRefresh
         showTitle,
         showDelete,
         show,
-        toggleShow
+        toggleShow,
+        setInputLoaded
     }
 }

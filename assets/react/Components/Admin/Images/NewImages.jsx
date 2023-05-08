@@ -2,6 +2,8 @@ import React from "react";
 import ImageFullScreen from "../../Ui/ImageFullScreen";
 import styled, {keyframes} from "styled-components";
 import HeightTransition from "../../Ui/HeightTransition";
+import FlashAlert from "../../Ui/FlashAlert";
+
 
 export default function (
     {
@@ -17,9 +19,10 @@ export default function (
         handleAddImage,
         handleCloseNewImage,
         show,
-        setShow,
-        toggleShow,
-        start
+        start,
+        showValidate,
+        showAlert,
+        handleCloseFlash
     }
 ) {
     return (
@@ -33,19 +36,19 @@ export default function (
                                 <p>{e.file.name}</p>
                                 <button data-id={e.id} className={'btn btn-primary w-100 mb-4'} onClick={handleShowNewImage}>Voir</button>
                                 <label className={'mb-2'} htmlFor={'imageInput' + e.id}>Titre de l'image : </label>
-                                <input ref={ el => newImagesInputRef.current[e.id] = el} id={'imageInput' + e.id} className={'form-control border-primary'} type={'text'} />
+                                <input required={true} ref={ el => newImagesInputRef.current[e.id] = el} id={'imageInput' + e.id} className={'form-control border-primary shadow1'} type={'text'} />
                                 <button data-id={e.id} onClick={deleteNew} className={'btn btn-primary w-100 mt-4'}>Annuler</button>
                                 <ImageFullScreen image={e} show={showNewImgState[e.id]} handleCloseImage={handleCloseNewImage} base64={e.base64}/>
                             </NewDiv>
                         </HeightTransition>
                     )
                 })}
-
+                {showAlert && <FlashAlert handleClick={handleCloseFlash} type={'success'} message={"Vos images ont bien été enregistrer."}/>}
                 <Input ref={fileInputRef} value={input} onChange={handleInput} type="file" />
                 <button onClick={handleAddImage} className={'btn btn-primary w-100 mb-4 shadow1'}>Ajouter une image</button>
-                {newImages.length > 0 &&
+                <HeightTransition show={showValidate}>
                     <button type={'submit'} className={'btn btn-primary w-100 mb-4 shadow1'}>Valider</button>
-                }
+                </HeightTransition>
             </form>
         </>
     )

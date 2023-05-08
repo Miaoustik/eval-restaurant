@@ -8,8 +8,9 @@ import Inscrire from "./Routes/Inscrire";
 import Menu from "./Routes/Menu";
 import Carte from "./Routes/Carte";
 import Reserver from "./Routes/Reserver";
-import Admin from "./Routes/Admin";
 import useControllerRef from "./Hooks/useControllerRef";
+import AdminImage from "./Routes/Admin/AdminImage";
+import AdminCarte from "./Routes/Admin/AdminCarte";
 
 export default function Router () {
 
@@ -88,8 +89,16 @@ export default function Router () {
             />
         },
         {
-            path: '/admin',
-            element: <Admin
+            path: '/admin/image',
+            element: <AdminImage
+                user={user}
+                isAdmin={isAdmin}
+                horaires={horaires}
+            />
+        },
+        {
+            path: '/admin/carte',
+            element: <AdminCarte
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}

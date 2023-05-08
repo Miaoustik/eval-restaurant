@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\DishRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DishRepository::class)]
 class Dish
@@ -12,14 +13,18 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['GET_CARTE'])]
     private ?int $id = null;
 
+    #[Groups(['GET_CARTE'])]
     #[ORM\Column(length: 150)]
     private ?string $title = null;
 
+    #[Groups(['GET_CARTE'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
+    #[Groups(['GET_CARTE'])]
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2)]
     private ?string $price = null;
 
