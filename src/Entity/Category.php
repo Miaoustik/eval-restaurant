@@ -14,10 +14,10 @@ class Category
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     private ?int $id = null;
 
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     #[ORM\Column(length: 100)]
     private ?string $name = null;
 

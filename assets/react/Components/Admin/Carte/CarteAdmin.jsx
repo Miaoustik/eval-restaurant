@@ -1,6 +1,7 @@
 import React from "react";
 import HeightTransition from "../../Ui/HeightTransition";
 import InputWithRef from "../../Ui/InputWithRef";
+import DishForm from "../../Ui/DishForm";
 
 export default function (props) {
     return (
@@ -28,31 +29,14 @@ export default function (props) {
                                                 <button data-id={f.id} onClick={props.toggleShowModify} className={'btn btn-primary w-100 shadow1 mt-2 mb-4'}>{props.showModify[f.id] ? 'Annuler' : 'Modifier'}</button>
                                             </div>
                                             <HeightTransition show={props.showModify[f.id]} >
-                                                <form data-id={f.id} onSubmit={props.handleSubmit}>
-                                                    <div className={'mx-4 mb-3'}>
-                                                        <InputWithRef ref={el => props.inputsRef.current[f.id] = {...props.inputsRef.current[f.id], title: el}} type={'text'} label={"Nouveau titre :"} />
-                                                    </div>
-                                                    <div className={'mx-4 mb-3'}>
-                                                        <InputWithRef ref={el => props.inputsRef.current[f.id] = {...props.inputsRef.current[f.id], description: el}} type={'text'} label={"Nouvelle description :"} />
-                                                    </div>
-                                                    <div className={'mx-4 mb-3'}>
-                                                        <InputWithRef ref={el => props.inputsRef.current[f.id] = {...props.inputsRef.current[f.id], price: el}} type={'text'} label={"Nouveau prix :"} />
-                                                    </div>
-                                                    <div className={'mx-4 mb-4'}>
-                                                        <label className={'mb-2'} htmlFor={'cat' + f.id}>Nouvelle catégorie : </label>
-                                                        <select ref={el => props.inputsRef.current[f.id] = { ...props.inputsRef.current[f.id], category: el}} id={'cat' + f.id} className="form-select" >
-                                                            <option value={'default'}>Choississez une catégorie</option>
-                                                            {props.categories.map(g => {
-                                                                return (
-                                                                    <option key={g.id} value={g.id}>{g.name}</option>
-                                                                )
-                                                            })}
-                                                        </select>
-                                                    </div>
-                                                    <div className={'mx-4 mb-4'}>
-                                                        <button type={'submit'} className={'btn btn-primary w-100 shadow1'}>Enregistrer</button>
-                                                    </div>
-                                                </form>
+                                                <DishForm id={f.id} inputsRef={props.inputsRef} categories={props.categories} handleSubmit={props.handleSubmit} />
+                                                <div className={'mx-4'}>
+                                                    <button data-id={f.id} className={' btn mb-4 w-100 shadow1 ' + (props.showDelete[f.id] ? 'btn-success' : 'btn-danger')} onClick={props.toggleShowDelete}>{props.showDelete[f.id] ? 'Annuler' : "Supprimer le plat"}</button>
+                                                    <HeightTransition className={'pb-4'} show={props.showDelete[f.id]}>
+                                                        <p className={'merri'}>Êtes-vous sûr ?</p>
+                                                        <button data-id={f.id} onClick={props.handleDelete} className={'btn btn-danger w-100 shadow1'}>Supprimer</button>
+                                                    </HeightTransition>
+                                                </div>
                                             </HeightTransition>
                                         </div>
                                     )

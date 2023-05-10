@@ -80,8 +80,12 @@ export default function ({ horaires, login, user, logout, error, loadingLogin, l
                                                 <h2 className={'merri text-primary fs-5'}>Se connecter</h2>
                                                 <p className={'mukta'}>Pas encore de compte ? <Link to={'/inscription'} >S'inscrire</Link> </p>
                                                 <form onSubmit={handleLogin}>
-                                                    <InputWithRef ref={emailRef} required={true} type={'email'} label={'Email :'} placeholder={'Votre email ...'} autofocus={true}/>
-                                                    <InputWithRef ref={passwordRef} required={true} type={'password'} label={'Mot de passe :'} placeholder={'Votre mot de passe ...'} />
+                                                    <div className={'mb-2'}>
+                                                        <InputWithRef  ref={emailRef} required={true} type={'email'} label={'Email :'} placeholder={'Votre email ...'} autofocus={true}/>
+                                                    </div>
+                                                    <div>
+                                                        <InputWithRef ref={passwordRef} required={true} type={'password'} label={'Mot de passe :'} placeholder={'Votre mot de passe ...'} />
+                                                    </div>
                                                     <button type={'submit'} className={'btn btn-primary shadow1 merri w-100 mt-5'}>Se connecter</button>
                                                 </form>
                                             </>

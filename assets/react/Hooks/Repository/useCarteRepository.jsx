@@ -18,9 +18,19 @@ export default function (controllerRef) {
         return http.post('/api/admin/carte/modify', data)
     }
 
+    const createDish = (data) => {
+        return http.post('/api/admin/carte/create-dish', data)
+    }
+
+    const deleteDish = (id) => {
+        return http.post('/api/admin/carte/delete-dish', id)
+    }
+
     const repository = {
         get,
-        modify
+        modify,
+        createDish,
+        deleteDish
     }
 
     return {

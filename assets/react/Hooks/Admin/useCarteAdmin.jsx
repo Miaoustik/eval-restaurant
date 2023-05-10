@@ -1,39 +1,23 @@
-import {useEffect, useRef, useState} from "react";
-import useCarteRepository from "../Repository/useCarteRepository";
-import useControllerRef from "../useControllerRef";
+import {useEffect, useRef} from "react";
 import useHeightTransition from "../useHeightTransition";
 
-export default function () {
+export default function (carte, repository, setCarte, categories) {
 
-    const controllerRef = useControllerRef()
-    const {carte, error, repository} = useCarteRepository(controllerRef)
+
     const inputsRef = useRef({})
 
-    const categories = carte.map(el => {
-        return {
-            id: el.id,
-            name: el.name
-        }
-    })
-
     const {show: showCategory, toggleShow: toggleShowCategory} = useHeightTransition()
-    const {show: showModify, toggleShow: toggleShowModify} = useHeightTransition()
+    const {show: showModify, toggleShow: toggleShowModify, setShow: setShowModify} = useHeightTransition()
+    const {show: showDelete, toggleShow: toggleShowDelete, setShow: setShowDelete} = useHeightTransition()
+
 
     useEffect(() => {
         repository.get()
     }, [])
 
-    useEffect(() => {
-        if (Object.keys(carte).length > 0) {
-
-        }
-    }, [carte])
-
     const handleSubmit = (e) => {
         e.preventDefault()
         const id = e.target.getAttribute('data-id')
-
-        //if empty ('', and cat = 'default')
 
         const data = {
             id,
@@ -44,7 +28,60 @@ export default function () {
         }
 
         repository.modify(data)
-            .then(res => console.log(res.data))
+            .then(res => {
+                if (res.ok) {
+                    setCarte(prev => {
+                        const news = [...prev]
+                        news.forEach(el => {
+                            el.dishes.forEach((ell, kk) => {
+                                if (ell.id == id) {
+                                    el.dishes.splice(kk, 1)
+                                }
+                            })
+                        })
+
+                        news.forEach((el, k) => {
+                            if (el.id == res.data.category.id) {
+                                el.dishes.push({
+                                    id: res.data.id,
+                                    title: res.data.title,
+                                    description: res.data.description,
+                                    price: res.data.price,
+                                })
+                            }
+                        })
+                        return news
+                    })
+                    setShowModify(prev => {
+                        const news = {...prev}
+                        news[id] = false
+                        return news
+                    })
+                }
+            })
+    }
+
+    const handleDelete = (e) => {
+        e.preventDefault()
+        const id = e.target.getAttribute('data-id')
+
+        repository.deleteDish({id})
+            .then(res => {
+                if (res.ok) {
+                    setCarte(prev => {
+                        const n = [...prev]
+                        n.forEach(el => {
+                            el.dishes.forEach((ell, kk) => {
+                                if (ell.id == id) {
+                                    el.dishes.splice(kk, 1)
+                                }
+                            })
+                        })
+                        return n
+                    })
+                }
+                console.log(res)
+            })
     }
 
     return {
@@ -55,6 +92,9 @@ export default function () {
         toggleShowModify,
         categories,
         handleSubmit,
-        inputsRef
+        inputsRef,
+        handleDelete,
+        showDelete,
+        toggleShowDelete
     }
 }

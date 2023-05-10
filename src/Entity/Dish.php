@@ -13,23 +13,24 @@ class Dish
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     private ?int $id = null;
 
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     #[ORM\Column(length: 150)]
     private ?string $title = null;
 
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[Groups(['GET_CARTE'])]
+    #[Groups(['GET_CARTE', 'GET_DISH'])]
     #[ORM\Column(type: Types::DECIMAL, precision: 6, scale: 2)]
     private ?string $price = null;
 
     #[ORM\ManyToOne(inversedBy: 'dishes')]
     #[ORM\JoinColumn(nullable: true)]
+    #[Groups(['GET_DISH'])]
     private ?Category $category = null;
 
     public function getId(): ?int

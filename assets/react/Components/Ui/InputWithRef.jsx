@@ -1,14 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 
-export default React.forwardRef(function ({ type, label, placeholder = null, autofocus = false, rows = null, required = false, autocomplete = true, min = null, max = null }, ref) {
+export default React.forwardRef(function ({ type, label, placeholder = null, autofocus = false, rows = null, required = false, autocomplete = true, min = null, max = null, step = null }, ref) {
 
 
     if (type === 'number') {
         return (
             <div>
                 <label className={'mukta text-primary mb-2'}>{label}</label>
-                <Input ref={ref} name={type} min={min} max={max} required={required} className={'form-control border border-primary border-1 shadow1'} type={type} autoFocus={autofocus}/>
+                <Input step={step} ref={ref} name={type} min={min} max={max} required={required} className={'form-control border border-primary border-1 shadow1'} type={type} autoFocus={autofocus}/>
             </div>
         )
     }
