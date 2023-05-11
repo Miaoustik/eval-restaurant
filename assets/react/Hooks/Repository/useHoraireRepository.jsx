@@ -23,9 +23,14 @@ export default function (controllerRef) {
             .then(res => handleResponse(res, setHoraires))
     }
 
+    const modify = (data) => {
+        return http.post('/api/admin/horaire/modify', data)
+    }
+
     const repository = {
         getAll,
-        getAllParsed
+        getAllParsed,
+        modify
     }
 
     return {

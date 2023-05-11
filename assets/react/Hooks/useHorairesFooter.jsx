@@ -49,5 +49,5 @@ export default function (controllerRef) {
             .finally(() => setLoading(false))
     }, [])
 
-    return [horaires, loading]
+    return [horaires, loading, repository]
 }

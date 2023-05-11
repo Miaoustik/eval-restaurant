@@ -11,11 +11,12 @@ import Reserver from "./Routes/Reserver";
 import useControllerRef from "./Hooks/useControllerRef";
 import AdminImage from "./Routes/Admin/AdminImage";
 import AdminCarte from "./Routes/Admin/AdminCarte";
+import AdminHoraire from "./Routes/Admin/AdminHoraire";
 
 export default function Router () {
 
     const controllerRef = useControllerRef()
-    const [horaires, loading] = useHorairesFooter(controllerRef)
+    const [horaires, loading, repository] = useHorairesFooter(controllerRef)
 
     const {
         user,
@@ -102,6 +103,15 @@ export default function Router () {
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
+            />
+        },
+        {
+            path: '/admin/horaire',
+            element: <AdminHoraire
+                user={user}
+                isAdmin={isAdmin}
+                horaires={horaires}
+                repository={repository}
             />
         }
     ])
