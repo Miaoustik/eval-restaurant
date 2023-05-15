@@ -19,14 +19,6 @@ class MaxCustomer
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $value = null;
 
-    #[ORM\OneToMany(mappedBy: 'maxCustomer', targetEntity: Rotation::class)]
-    private Collection $rotations;
-
-    public function __construct()
-    {
-        $this->rotations = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -40,36 +32,6 @@ class MaxCustomer
     public function setValue(int $value): self
     {
         $this->value = $value;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Rotation>
-     */
-    public function getRotations(): Collection
-    {
-        return $this->rotations;
-    }
-
-    public function addRotation(Rotation $rotation): self
-    {
-        if (!$this->rotations->contains($rotation)) {
-            $this->rotations->add($rotation);
-            $rotation->setMaxCustomer($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRotation(Rotation $rotation): self
-    {
-        if ($this->rotations->removeElement($rotation)) {
-            // set the owning side to null (unless already changed)
-            if ($rotation->getMaxCustomer() === $this) {
-                $rotation->setMaxCustomer(null);
-            }
-        }
 
         return $this;
     }

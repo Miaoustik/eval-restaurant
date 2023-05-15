@@ -119,6 +119,8 @@ class AppFixtures extends Fixture
             ->setEveningEnd(new \DateTime("22:00:00"))
         ;
 
+        $manager->persist($horaire1);
+
         $horaire2 = (new HoraireDay())
             ->setDayName('Mardi')
             ->setMorningStart(new \DateTime("12:00:00"))
@@ -126,10 +128,13 @@ class AppFixtures extends Fixture
             ->setEveningStart(new \DateTime("16:00:00"))
             ->setEveningEnd(new \DateTime("22:00:00"))
         ;
+        $manager->persist($horaire2);
 
         $horaire3 = (new HoraireDay())
             ->setDayName('Mercredi')
         ;
+        $manager->persist($horaire3);
+
 
         $horaire4 = (new HoraireDay())
             ->setDayName('Jeudi')
@@ -138,6 +143,8 @@ class AppFixtures extends Fixture
             ->setEveningStart(new \DateTime("16:00:00"))
             ->setEveningEnd(new \DateTime("22:00:00"))
         ;
+        $manager->persist($horaire4);
+
 
         $horaire5 = (new HoraireDay())
             ->setDayName('Vendredi')
@@ -146,6 +153,8 @@ class AppFixtures extends Fixture
             ->setEveningStart(new \DateTime("16:00:00"))
             ->setEveningEnd(new \DateTime("22:00:00"))
         ;
+        $manager->persist($horaire5);
+
 
         $horaire6 = (new HoraireDay())
             ->setDayName('Samedi')
@@ -154,60 +163,14 @@ class AppFixtures extends Fixture
             ->setEveningStart(new \DateTime("16:00:00"))
             ->setEveningEnd(new \DateTime("22:00:00"))
         ;
+        $manager->persist($horaire6);
+
 
         $horaire7 = (new HoraireDay())
             ->setDayName('Dimanche')
         ;
+        $manager->persist($horaire7);
 
-        function addRotation ($start, $end, $maxCustomer, $horaire, $manager) {
-            $startClone = clone $start;
-            $loop = 1;
-            while ($startClone->getTimestamp() <= $end->getTimestamp()) {
-                $rotation = new Rotation();
-                $rotation->setMaxCustomer($maxCustomer);
-                $rotation->setDate(clone $startClone);
-                $rotation->setCustomerNumber($maxCustomer->getValue() - 14 );
-                $rotation->addReservation((new Reservation())->setAllergens('Noix')->setCustomerNumber(4));
-                $rotation->addReservation((new Reservation())->setCustomerNumber(10));
-
-                $horaire->addRotation($rotation);
-
-                if ($loop % 5 === 0) {
-                    $startClone = $startClone->add(new \DateInterval('PT1H15M'));
-                } else {
-                    $startClone = $startClone->add(new \DateInterval('PT15M'));
-                }
-
-                $loop++;
-
-                $manager->persist($rotation);
-            }
-        }
-
-        function setRotations ( HoraireDay $horaire, MaxCustomer $maxCustomer, ObjectManager $manager) {
-
-            $horaireMorningStart = $horaire->getMorningStart();
-            $horaireMorningEnd = $horaire->getMorningEnd();
-
-            if ($horaireMorningStart !== null && $horaireMorningEnd !== null) {
-                $limitHoraireMorning = $horaireMorningEnd->sub(new \DateInterval('PT1H'));
-                addRotation($horaireMorningStart, $limitHoraireMorning, $maxCustomer, $horaire, $manager);
-            }
-
-            $horaireEveningStart = $horaire->getEveningStart();
-            $horaireEveningEnd = $horaire->getEveningEnd();
-
-            if ($horaireEveningStart !== null && $horaireEveningEnd !== null) {
-                $limitHoraireEvening = $horaireEveningEnd->sub(new \DateInterval('PT1H'));
-                addRotation($horaireEveningStart, $limitHoraireEvening, $maxCustomer, $horaire, $manager);
-            }
-        }
-
-        for ($i = 0; $i < 7; $i++) {
-            $horaireName = 'horaire' . ($i + 1);
-            setRotations($$horaireName, $maxCustomer, $manager);
-            $manager->persist($$horaireName);
-        }
 
         $manager->flush();
     }

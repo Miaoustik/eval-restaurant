@@ -2,6 +2,8 @@
 
 namespace App\Controller\Api\Admin;
 
+use App\Repository\HoraireDayRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,11 +18,59 @@ use Symfony\Component\Serializer\SerializerInterface;
 class HoraireController extends AbstractController
 {
     #[Route(path: '/modify', methods: ['POST'])]
-    public function modify (Request $request, SerializerInterface $serializer): Response
+    public function modify (
+        Request $request,
+        HoraireDayRepository $repository,
+        EntityManagerInterface $manager,
+        SerializerInterface $serializer
+    ): Response
     {
-        $data = json_decode($request->getContent());
 
-        $json = $serializer->serialize($data, JsonEncoder::FORMAT);
-        return new JsonResponse(data: $json, json: true);
+        $newHoraires = json_decode($request->getContent());
+        $horaires = $repository->findAll();
+
+        foreach ($horaires as $horaire) {
+
+            $dayName = $horaire->getDayName();
+            $newDay = $newHoraires->$dayName;
+
+            $morningClosed = $newDay->morningClosed;
+            $morningStart = null;
+            $morningEnd = null;
+
+            if ($morningClosed === false) {
+                $morningStart = new \DateTime($newDay->morningStart);
+                $morningEnd = new \DateTime($newDay->morningEnd);
+            }
+
+            $horaire->setMorningStart($morningStart);
+            $horaire->setMorningEnd($morningEnd);
+
+            $eveningClosed = $newDay->eveningClosed;
+            $eveningStart = null;
+            $eveningEnd = null;
+
+            if ($eveningClosed === false) {
+                $eveningStart = new \DateTime($newDay->eveningStart);
+                $eveningEnd = new \DateTime($newDay->eveningEnd);
+            }
+
+            $horaire->setEveningStart($eveningStart);
+            $horaire->setEveningEnd($eveningEnd);
+        }
+
+        try {
+            $manager->flush();
+            $response = $serializer->serialize(data: $horaires, format: JsonEncoder::FORMAT, context: [
+                'groups' => ['HOME_DATA']
+            ]);
+
+            return new JsonResponse(data: $response, json: true);
+        } catch (\Exception $exception) {
+            return new JsonResponse(data: [
+                'errorMessage' => $exception->getMessage(),
+                'errorCode' => $exception->getCode()
+            ], status: 500);
+        }
     }
 }

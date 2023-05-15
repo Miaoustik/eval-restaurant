@@ -20,22 +20,25 @@ class Rotation
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $customerNumber = null;
+    private ?int $customerNumberMorning = 0;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $customerNumberEvening = 0;
 
     #[ORM\ManyToOne(inversedBy: 'rotations')]
     #[ORM\JoinColumn(nullable: false)]
     private ?MaxCustomer $maxCustomer = null;
 
-    #[ORM\ManyToOne(inversedBy: 'rotations')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?HoraireDay $horaireDay = null;
+    #[ORM\OneToMany(mappedBy: 'rotationMorning', targetEntity: Reservation::class, cascade: ['persist'])]
+    private Collection $reservationsMorning;
 
-    #[ORM\OneToMany(mappedBy: 'rotation', targetEntity: Reservation::class, cascade: ['persist'])]
-    private Collection $reservations;
+    #[ORM\OneToMany(mappedBy: 'rotationEvening', targetEntity: Reservation::class, cascade: ['persist'])]
+    private Collection $reservationsEvening;
 
     public function __construct()
     {
-        $this->reservations = new ArrayCollection();
+        $this->reservationsMorning = new ArrayCollection();
+        $this->reservationsEvening = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -55,14 +58,26 @@ class Rotation
         return $this;
     }
 
-    public function getCustomerNumber(): ?int
+    public function getCustomerNumberMorning(): ?int
     {
-        return $this->customerNumber;
+        return $this->customerNumberMorning;
     }
 
-    public function setCustomerNumber(int $customerNumber): self
+    public function setCustomerNumberMorning(int $customerNumberMorning): self
     {
-        $this->customerNumber = $customerNumber;
+        $this->customerNumberMorning = $customerNumberMorning;
+
+        return $this;
+    }
+
+    public function getCustomerNumberEvening(): ?int
+    {
+        return $this->customerNumberEvening;
+    }
+
+    public function setCustomerNumberEvening(int $customerNumberEvening): self
+    {
+        $this->customerNumberEvening = $customerNumberEvening;
 
         return $this;
     }
@@ -79,14 +94,32 @@ class Rotation
         return $this;
     }
 
-    public function getHoraireDay(): ?HoraireDay
+    /**
+     * @return Collection<int, Reservation>
+     */
+    public function getReservationsMorning(): Collection
     {
-        return $this->horaireDay;
+        return $this->reservationsMorning;
     }
 
-    public function setHoraireDay(?HoraireDay $horaireDay): self
+    public function addReservationMorning(Reservation $reservation): self
     {
-        $this->horaireDay = $horaireDay;
+        if (!$this->reservationsMorning->contains($reservation)) {
+            $this->reservationsMorning->add($reservation);
+            $reservation->setRotationMorning($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReservationMorning(Reservation $reservation): self
+    {
+        if ($this->reservationsMorning->removeElement($reservation)) {
+            // set the owning side to null (unless already changed)
+            if ($reservation->getRotationMorning() === $this) {
+                $reservation->setRotationMorning(null);
+            }
+        }
 
         return $this;
     }
@@ -94,27 +127,27 @@ class Rotation
     /**
      * @return Collection<int, Reservation>
      */
-    public function getReservations(): Collection
+    public function getReservationsEvening(): Collection
     {
-        return $this->reservations;
+        return $this->reservationsEvening;
     }
 
-    public function addReservation(Reservation $reservation): self
+    public function addReservationEvening(Reservation $reservation): self
     {
-        if (!$this->reservations->contains($reservation)) {
-            $this->reservations->add($reservation);
-            $reservation->setRotation($this);
+        if (!$this->reservationsEvening->contains($reservation)) {
+            $this->reservationsEvening->add($reservation);
+            $reservation->setRotationEvening($this);
         }
 
         return $this;
     }
 
-    public function removeReservation(Reservation $reservation): self
+    public function removeReservationEvening(Reservation $reservation): self
     {
-        if ($this->reservations->removeElement($reservation)) {
+        if ($this->reservationsEvening->removeElement($reservation)) {
             // set the owning side to null (unless already changed)
-            if ($reservation->getRotation() === $this) {
-                $reservation->setRotation(null);
+            if ($reservation->getRotationEvening() === $this) {
+                $reservation->setRotationEvening(null);
             }
         }
 

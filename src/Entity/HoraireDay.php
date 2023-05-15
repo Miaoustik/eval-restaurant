@@ -37,9 +37,6 @@ class HoraireDay
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $eveningEnd = null;
 
-    #[ORM\OneToMany(mappedBy: 'horaireDay', targetEntity: Rotation::class)]
-    private Collection $rotations;
-
     public function __construct()
     {
         $this->rotations = new ArrayCollection();
@@ -106,36 +103,6 @@ class HoraireDay
     public function setEveningEnd(?\DateTimeInterface $eveningEnd): self
     {
         $this->eveningEnd = $eveningEnd;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Rotation>
-     */
-    public function getRotations(): Collection
-    {
-        return $this->rotations;
-    }
-
-    public function addRotation(Rotation $rotation): self
-    {
-        if (!$this->rotations->contains($rotation)) {
-            $this->rotations->add($rotation);
-            $rotation->setHoraireDay($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRotation(Rotation $rotation): self
-    {
-        if ($this->rotations->removeElement($rotation)) {
-            // set the owning side to null (unless already changed)
-            if ($rotation->getHoraireDay() === $this) {
-                $rotation->setHoraireDay(null);
-            }
-        }
 
         return $this;
     }

@@ -1,33 +1,18 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
+import {format} from "../../Components/Utils/formatHoraire";
 
 export default function (controllerRef, horaires, repository) {
 
     const [newHoraire, setNewHoraire] = useState({})
     const [formError, setFormError] = useState({})
     const [loaded, setLoaded] = useState(false)
-
-    //TODO REF to save initial state of the form
+    const [submitError, setSubmitError] = useState(false)
+    const [submittedOk, setSubmittedOk] = useState(false)
 
     useEffect(() => {
         if (horaires.length > 0) {
             setNewHoraire(prev => {
                 const news = {...prev}
-
-                const format = (string) => {
-
-                    if (string === null) {
-                        return ''
-                    }
-
-                    let newString = string
-                    if (string.substring(string.length - 2) === 'et') {
-                        newString = string.substring(0, string.length - 3)
-                    }
-                    return newString.split('à').map(el => {
-                        const trimed = el.trim()
-                        return trimed.replace('h', ':')
-                    })
-                }
 
                 horaires.forEach((el, k) => {
 
@@ -101,6 +86,7 @@ export default function (controllerRef, horaires, repository) {
         setError(day, 'morning', null)
         setError(day, 'evening', null)
 
+
         const toDate = (horaire) => {
             const date = new Date()
             const splitHoraire = horaire.split(':')
@@ -117,39 +103,82 @@ export default function (controllerRef, horaires, repository) {
             }
         }
 
-        const morningStart = toDate(newHoraire[day].morningStart)
-        const morningEnd = toDate(newHoraire[day].morningEnd)
+        let morningStart = null
+        let morningEnd = null
 
-        firstCheck(morningStart, morningEnd, day, 'morning')
+        if (newHoraire[day].morningStart || newHoraire[day].morningEnd) {
+            if (!(newHoraire[day].morningStart && newHoraire[day].morningEnd)) {
+                setError(day, 'morning', 'Les deux champs début et fin doivent être remplis.')
 
-        const eveningStart = toDate(newHoraire[day].eveningStart)
-        const eveningEnd = toDate(newHoraire[day].eveningEnd)
+            } else {
+                morningStart = toDate(newHoraire[day].morningStart)
+                morningEnd = toDate(newHoraire[day].morningEnd)
 
-        firstCheck(eveningStart, eveningEnd, day, 'evening')
+                firstCheck(morningStart, morningEnd, day, 'morning')
+            }
+        }
+
+        let eveningStart = null
+        let eveningEnd = null
+
+        if (newHoraire[day].eveningStart || newHoraire[day].eveningEnd) {
+            if (!(newHoraire[day].eveningStart && newHoraire[day].eveningEnd)) {
+                setError(day, 'evening', 'Les deux champs début et fin doivent être remplis.')
+
+            } else {
+                eveningStart = toDate(newHoraire[day].eveningStart)
+                eveningEnd = toDate(newHoraire[day].eveningEnd)
+
+                firstCheck(eveningStart, eveningEnd, day, 'evening')
+            }
+        }
+
+
+        if (!morningStart || !morningEnd || !eveningStart || !eveningEnd) {
+            return null
+        }
+
 
         if (eveningStart - morningStart < 0) {
-            setError(day, 'evening', "L'heure de début du midi est inférieure à l'heure de début du matin.")
-            setError(day, 'morning', "L'heure de début du midi est inférieure à l'heure de début du matin.")
+            setError(day, 'evening', "L'heure de début du soir est inférieure à l'heure de début du midi.")
+            setError(day, 'morning', "L'heure de début du soir est inférieure à l'heure de début du midi.")
         }
 
         if (eveningStart - morningEnd < 0) {
-            setError(day, 'evening', "L'heure de début du midi est inférieure à l'heure de fin du matin.")
-            setError(day, 'morning', "L'heure de début du midi est inférieure à l'heure de fin du matin.")
+            setError(day, 'evening', "L'heure de début du soir est inférieure à l'heure de fin du midi.")
+            setError(day, 'morning', "L'heure de début du soir est inférieure à l'heure de fin du midi.")
         }
 
         if (eveningEnd - morningStart < 0) {
-            setError(day, 'evening', "L'heure de fin du midi est inférieure à l'heure de début du matin.")
-            setError(day, 'morning', "L'heure de fin du midi est inférieure à l'heure de début du matin.")
+            setError(day, 'evening', "L'heure de fin du soir est inférieure à l'heure de début du midi.")
+            setError(day, 'morning', "L'heure de fin du soir est inférieure à l'heure de début du midi.")
         }
 
         if (eveningEnd - morningEnd < 0) {
-            setError(day, 'evening', "L'heure de fin du midi est inférieure à l'heure de fin du matin.")
-            setError(day, 'morning', "L'heure de fin du midi est inférieure à l'heure de fin du matin.")
+            setError(day, 'evening', "L'heure de fin du soir est inférieure à l'heure de fin du midi.")
+            setError(day, 'morning', "L'heure de fin du soir est inférieure à l'heure de fin du midi.")
         }
     }
 
     const handleSubmit = (e) => {
         e.preventDefault()
+
+        let error = null
+        setSubmitError(false)
+        setSubmittedOk(false)
+
+        Object.values(formError).forEach(el => {
+            Object.values(el).forEach(ell => {
+                if (ell !== null) {
+                    setSubmitError(true)
+                    error = true
+                }
+            })
+        })
+
+        if (error === true) {
+            return null
+        }
 
         const data = {}
 
@@ -167,11 +196,7 @@ export default function (controllerRef, horaires, repository) {
         })
 
         repository.modify(data)
-            .then(res => {
-                console.log(res)
-                //TODO Backend and front return
-            })
-
+            .then(() => setSubmittedOk(true))
     }
 
     return {
@@ -182,6 +207,8 @@ export default function (controllerRef, horaires, repository) {
         loaded,
         formError,
         handleCheck,
-        handleBlur
+        handleBlur,
+        submitError,
+        submittedOk
     }
 }

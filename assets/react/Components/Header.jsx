@@ -56,7 +56,7 @@ export default function ({ light = '0', user, isAdmin }) {
             <Nav light={light} className={'d-flex gap-1 navbar border-bottom border-1' + (light === '1' ? ' border-white fixed-top' : ' border-primary fixed-top')} >
                 <Brand to={'/'} className={'navbar-brand mx-auto ' + (light === '1' ? 'text-white' : 'text-primary')}>Quai Antique</Brand>
                 <div>
-                    <A light={light} to={'/'} className={'btn fs-6 me-2' }>Réserver</A>
+                    <A light={light} to={'/reserver'} className={'btn fs-6 me-2' }>Réserver</A>
                     <A light={light} to={'/login'} className={'btn  px-2 py-1  fs-5'}><i className="bi bi-person-fill"></i><Span>Se connecter</Span></A>
                 </div>
             </Nav>

@@ -17,8 +17,11 @@ class Reservation
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $customerNumber = null;
 
-    #[ORM\ManyToOne(inversedBy: 'reservations')]
-    private ?Rotation $rotation = null;
+    #[ORM\ManyToOne(inversedBy: 'reservationsMorning')]
+    private ?Rotation $rotationMorning = null;
+
+    #[ORM\ManyToOne(inversedBy: 'reservationsEvening')]
+    private ?Rotation $rotationEvening = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $allergens = null;
@@ -40,14 +43,26 @@ class Reservation
         return $this;
     }
 
-    public function getRotation(): ?Rotation
+    public function getRotationMorning(): ?Rotation
     {
-        return $this->rotation;
+        return $this->rotationMorning;
     }
 
-    public function setRotation(?Rotation $rotation): self
+    public function setRotationMorning(?Rotation $rotationMorning): self
     {
-        $this->rotation = $rotation;
+        $this->rotationMorning = $rotationMorning;
+
+        return $this;
+    }
+
+    public function getRotationEvening(): ?Rotation
+    {
+        return $this->rotationEvening;
+    }
+
+    public function setRotationEvening(?Rotation $rotationEvening): self
+    {
+        $this->rotationEvening = $rotationEvening;
 
         return $this;
     }

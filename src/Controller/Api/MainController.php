@@ -5,8 +5,12 @@ namespace App\Controller\Api;
 use App\Repository\CategoryRepository;
 use App\Repository\HoraireDayRepository;
 use App\Repository\ImageRepository;
+use App\Repository\MaxCustomerRepository;
+use App\Repository\RotationRepository;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
@@ -80,5 +84,24 @@ class MainController extends AbstractController
             'groups' => ['GET_CARTE']
         ]);
         return new JsonResponse(data: $json, json: true);
+    }
+
+    #[Route(path: '/rotation', methods: ['POST'])]
+    public function getRotation (RotationRepository $repository, Request $request): Response
+    {
+        $data = json_decode($request->getContent());
+
+        $date = new DateTime($data->date);
+        //$hourSplit = explode(':', $data->hour);
+        //$dateHour = clone $date;
+        //$dateHour->setTime($hourSplit[0], $hourSplit[1], $hourSplit[2]);
+
+        $rotation = $repository->findOneByDate($date);
+
+        if (!$rotation) {
+            return new JsonResponse(data: ['rotation' => '0']);
+        }
+
+        return new JsonResponse(['value' => $data]);
     }
 }
