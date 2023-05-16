@@ -12,6 +12,7 @@ import useControllerRef from "./Hooks/useControllerRef";
 import AdminImage from "./Routes/Admin/AdminImage";
 import AdminCarte from "./Routes/Admin/AdminCarte";
 import AdminHoraire from "./Routes/Admin/AdminHoraire";
+import AdminMenu from "./Routes/Admin/AdminMenu";
 
 export default function Router () {
 
@@ -112,6 +113,14 @@ export default function Router () {
                 isAdmin={isAdmin}
                 horaires={horaires}
                 repository={repository}
+            />
+        },
+        {
+            path: '/admin/menu',
+            element: <AdminMenu
+                user={user}
+                isAdmin={isAdmin}
+                horaires={horaires}
             />
         }
     ])

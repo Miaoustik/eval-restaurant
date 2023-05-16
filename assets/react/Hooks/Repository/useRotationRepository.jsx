@@ -9,19 +9,21 @@ export default function (controllerRef) {
 
     const get = (data) => {
         return http.post('/api/rotation', data)
-            .then(res => {
-                console.log(res)
-                return res
-            })
             .then(res => handleResponse(res, setRotation))
     }
 
+    const reserver = (data) => {
+        return http.post('/api/reserver', data)
+    }
+
     const repository = {
-        get
+        get,
+        reserver
     }
 
     return {
         rotation,
-        repository
+        repository,
+        setRotation
     }
 }

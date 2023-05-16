@@ -2,12 +2,16 @@
 
 namespace App\Controller\Api;
 
+use App\Entity\Reservation;
+use App\Entity\Rotation;
 use App\Repository\CategoryRepository;
 use App\Repository\HoraireDayRepository;
 use App\Repository\ImageRepository;
 use App\Repository\MaxCustomerRepository;
+use App\Repository\MenuRepository;
 use App\Repository\RotationRepository;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,16 +96,98 @@ class MainController extends AbstractController
         $data = json_decode($request->getContent());
 
         $date = new DateTime($data->date);
-        //$hourSplit = explode(':', $data->hour);
-        //$dateHour = clone $date;
-        //$dateHour->setTime($hourSplit[0], $hourSplit[1], $hourSplit[2]);
 
+        /** @var Rotation|null $rotation */
         $rotation = $repository->findOneByDate($date);
 
         if (!$rotation) {
             return new JsonResponse(data: ['rotation' => '0']);
         }
 
-        return new JsonResponse(['value' => $data]);
+        return new JsonResponse(data: [
+            'id' => $rotation->getId(),
+            'morning' => $rotation->getCustomerNumberMorning(),
+            'evening' => $rotation->getCustomerNumberEvening()
+        ]);
+    }
+
+    #[Route(path: '/max', methods: ['GET'])]
+    public function max (MaxCustomerRepository $repository): Response
+    {
+        $max = $repository->findAll()[0];
+
+        return new JsonResponse(data: ['value' => $max->getValue()]);
+    }
+
+    #[Route(path: '/reserver', methods: ['POST'])]
+    public function reserver (Request $request, RotationRepository $rotationRepository, MaxCustomerRepository $maxCustomerRepository, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+        $date = new DateTime($data->dateInput);
+
+        $hourSplit = explode(':', ($data->choice));
+        $dateHour = clone $date;
+        $dateHour->add(new \DateInterval('PT' . $hourSplit[0] . 'H' . $hourSplit[1] . 'M'));
+
+        $max = ($maxCustomerRepository->findAll())[0];
+        $rotation = $rotationRepository->findOneByDate($date);
+
+        if ($rotation === null) {
+
+            $rotation = new Rotation();
+            $rotation->setMaxCustomer($max)
+                ->setDate($date);
+            $manager->persist($rotation);
+        }
+
+        $reservation = (new Reservation())
+            ->setCustomerNumber($data->convive)
+            ->setHour($dateHour);
+
+        if ($data->allergen !== '') {
+            $reservation->setAllergens($data->allergen);
+        }
+
+        if ($data->morning === true) {
+            $nextCustomer = $rotation->getCustomerNumberMorning() + $data->convive;
+            if ($nextCustomer > $max->getValue()) {
+                return new JsonResponse(data: [
+                    'errorMessage' => 'Plus de places disponibles'
+                ], status: Response::HTTP_BAD_REQUEST);
+            }
+            $rotation->setCustomerNumberMorning($nextCustomer)
+                ->addReservationMorning($reservation);
+        } else {
+            $nextCustomer = $rotation->getCustomerNumberEvening() + $data->convive;
+            if ($nextCustomer > $max->getValue()) {
+                return new JsonResponse(data: [
+                    'errorMessage' => 'Plus de places disponibles'
+                ], status: Response::HTTP_BAD_REQUEST);
+            }
+            $rotation->setCustomerNumberEvening($rotation->getCustomerNumberEvening() + $data->convive)
+                ->addReservationEvening($reservation);
+        }
+
+        try {
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                'errorCode' => $e->getCode(),
+                'errorMessage' => $e->getMessage()
+            ], status: 500);
+        }
+    }
+
+    #[Route(path: '/menu', methods: ['GET'])]
+    public function getMenu (MenuRepository $repository): Response
+    {
+        $menus = $repository->findAllEager();
+
+        $json = $this->serializer->serialize(data: $menus, format: JsonEncoder::FORMAT, context: [
+            'groups' => ['GET_MENU']
+        ]);
+
+        return new JsonResponse(data: $json, json: true);
     }
 }

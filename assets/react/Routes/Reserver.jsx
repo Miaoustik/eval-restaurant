@@ -1,30 +1,53 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
 import reserver from "../../images/reserver-1920.jpg"
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
-import Input from "../Components/Ui/Input";
 import useControllerRef from "../Hooks/useControllerRef";
 import LoadingFetch from "../Components/Ui/LoadingFetch";
 import useRotationRepository from "../Hooks/Repository/useRotationRepository";
 import {format, toDate} from "../Components/Utils/formatHoraire";
+import useHeightTransition from "../Hooks/useHeightTransition";
+import HeightTransition from "../Components/Ui/HeightTransition";
+import useMaxCustomerRepository from "../Hooks/Repository/useMaxCustomerRepository";
+import useScrollToTop from "../Hooks/useScrollToTop";
 
 const days = ['Dimanche', 'Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi']
 
 export default function ({horaires, user, isAdmin}) {
 
+    const scrollToTop = useScrollToTop()
+
     const controllerRef = useControllerRef()
-    const {repository, rotation} = useRotationRepository(controllerRef)
+    const {repository, rotation, setRotation} = useRotationRepository(controllerRef)
     const [dateInput, setDateInput] = useState('')
     const [errorDate, setErrorDate] = useState(false)
     const [morning, setMorning] = useState([])
     const [evening, setEvening] = useState([])
+    const [loadingRotation, setLoadingRotation] = useState(false)
+    const [choice, setChoice] = useState(null)
+    const {maxCustomer, repository: maxRepository} = useMaxCustomerRepository(controllerRef)
+    const [loadingMax, setLoadingMax] = useState(true)
+    const conviveRef = useRef()
+    const allergenRef = useRef()
+    const [submitted, setSubmitted ] = useState(false)
+    const [loadingSubmit, setLoadingSubmit] = useState(false)
+    const [errorSubmit, setErrorSubmit] = useState(null)
+
+    const {show: showMorning, toggleShow: toggleShowMorning, setShow: setShowMorning} = useHeightTransition()
+    const {show: showEvening, toggleShow: toggleShowEvening, setShow: setShowEvening} = useHeightTransition()
 
 
     useEffect(() => {
-        if (rotation) {
+        maxRepository.get()
+            .finally(() => setLoadingMax(false))
+    }, [])
+
+    useEffect(() => {
+        if (rotation !== null) {
             const date = new Date(dateInput)
+
             const day = days[date.getDay()]
             const horaire = horaires.filter(el => el.dayName === day)[0]
 
@@ -32,14 +55,16 @@ export default function ({horaires, user, isAdmin}) {
             let evening = null
 
             function setRotation (start, end, setter) {
-                setter(prevState => {
-                    const news = [...prevState]
+                setter(() => {
+                    const news = []
                     const cloneStart = new Date(start.getTime())
                     const cloneEnd = new Date(end.getTime())
                     cloneEnd.setHours(cloneEnd.getHours() - 1)
 
                     while (cloneStart <= cloneEnd) {
-                        news.push(cloneStart.getHours() + ':' + (cloneStart.getMinutes() < 10 ? ('0' + cloneStart.getMinutes()) : cloneStart.getMinutes() ))
+                        if ((new Date() < cloneStart) ) {
+                            news.push(cloneStart.getHours() + ':' + (cloneStart.getMinutes() < 10 ? ('0' + cloneStart.getMinutes()) : cloneStart.getMinutes()))
+                        }
                         cloneStart.setMinutes(cloneStart.getMinutes() + 15)
                     }
 
@@ -62,42 +87,99 @@ export default function ({horaires, user, isAdmin}) {
 
                 setRotation(eveningStart, eveningEnd, setEvening)
             }
-
-            const newDate = new Date()
         }
     }, [rotation])
+
+    useEffect(() => {
+        if (dateInput !== '') {
+            setLoadingRotation(true)
+            setRotation(null)
+            setMorning([])
+            setEvening([])
+            const date = new Date(dateInput)
+            date.setHours(0)
+
+            const newDate = new Date()
+            newDate.setHours(0)
+            newDate.setMinutes(0)
+            newDate.setSeconds(0)
+            newDate.setMilliseconds(0)
+
+            if (date < newDate) {
+                setErrorDate("Date antérieur à aujourd'hui")
+                return null
+            }
+
+            const data = {
+                date: dateInput,
+                hour: new Date().toLocaleTimeString('fr-FR', {timeZone: 'Europe/paris'})
+            }
+
+            repository.get(data)
+                .finally(() => setLoadingRotation(false))
+        }
+    }, [dateInput])
 
 
     const handleDateInput = (e) => {
         setDateInput(e.target.value)
+    }
 
-        if (e.target.value === '') {
-            return null
+    const handleChoice = (e) => {
+        e.preventDefault()
+        setChoice(e.target.getAttribute('data-horaire'))
+        closeShows()
+    }
+
+    const closeShows = () => {
+        setShowMorning(prevState => {
+            const news = {...prevState}
+            news['1'] = false
+            return news
+        })
+        setShowEvening(prevState => {
+            const news = {...prevState}
+            news['1'] = false
+            return news
+        })
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        scrollToTop()
+        setLoadingSubmit(true)
+        setSubmitted(false)
+        setErrorSubmit(null)
+
+        const obj = {
+            dateInput,
+            choice,
+            id: 'new',
+            convive: conviveRef.current.value,
+            allergen: allergenRef.current.value,
+            morning: morning.includes(choice),
         }
 
-        const date = new Date(e.target.value)
-        date.setHours(0)
+        repository.reserver(obj)
+            .then((res) => {
+                if (res.ok) {
+                    closeShows()
+                    setDateInput('')
+                    setMorning([])
+                    setEvening([])
+                    setChoice(null)
+                    setRotation(null)
+                    setSubmitted(true)
+                } else {
+                    setErrorSubmit(res.data.errorMessage)
+                }
 
-        const newDate = new Date()
-        newDate.setHours(0)
-        newDate.setMinutes(0)
-        newDate.setSeconds(0)
-        newDate.setMilliseconds(0)
+            })
+            .finally(() => {
 
+                setLoadingSubmit(false)
+            })
 
-
-        if (date < newDate) {
-            setErrorDate("Date antérieur à aujourd'hui")
-            console.log('Hier')
-            return null
-        }
-
-        const data = {
-            date: e.target.value,
-            hour: new Date().toLocaleTimeString('fr-FR', {timeZone: 'Europe/paris'})
-        }
-
-        repository.get(data)
     }
 
 
@@ -107,44 +189,106 @@ export default function ({horaires, user, isAdmin}) {
             <Main className={'mainContainer d-flex align-items-center min-h-100'}>
                 <Container>
                     <FormDiv>
-                        <h2 className={'text-center'}>Reservation</h2>
-                        <form>
-                            <div>
-                                <label>Date de la réservation : </label>
-                                <input  value={dateInput} onChange={handleDateInput} className={'form-control border border-primary shadow1'} type={'date'} required/>
-                            </div>
-                            {rotation !== null &&
+                        <h2 className={'text-center merri text-primary mb-4'}>Reservation</h2>
+                        {loadingMax || loadingSubmit
+                            ? (<LoadingFetch message={'Chargement ...'} />)
+                            : (
                                 <>
-                                    <div>
-                                        <label>Heure de la réservation : </label>
-                                        <button className={'btn btn-primary w-100 shadow1'}>Midi</button>
-
-                                        {morning.map(el => {
-                                            return (
-                                                <button key={el}>{el}</button>
+                                    <form onSubmit={handleSubmit}>
+                                        {submitted &&
+                                            <div className={'alert alert-success mukta'}>
+                                                Votre réservation a bien été prise en compte.
+                                            </div>
+                                        }
+                                        {errorSubmit &&
+                                            <div className={'alert alert-danger mukta'}>
+                                                {errorSubmit}
+                                            </div>
+                                        }
+                                        <div>
+                                            <label className={'merri text-primary mb-2'}>Date de la réservation : </label>
+                                            <input  value={dateInput} onChange={handleDateInput} className={'form-control border border-primary shadow1'} type={'date'} required/>
+                                        </div>
+                                        {loadingRotation
+                                            ? (
+                                                <LoadingFetch message={'Chargement...'} />
                                             )
-                                        })}
+                                            : (
+                                                <>
+                                                    {rotation !== null &&
+                                                        <>
+                                                            {(morning.length === 0 && evening.length === 0)
+                                                                ? (
+                                                                    <div className={'mt-4 alert alert-info mukta'}>
+                                                                        Aucune réservation disponnible.
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <>
+                                                                        <div>
+                                                                            <label className={'merri text-primary mt-4'}>Heure de la réservation : </label>
+                                                                            {morning.length > 0 &&
+                                                                                <>
+                                                                                    <button data-id={'1'} onClick={toggleShowMorning} className={'btn btn-primary w-100 shadow1'}>Midi</button>
+                                                                                    <HeightTransition show={showMorning['1']}>
+                                                                                        <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
+                                                                                            {morning.map(el => {
+                                                                                                return (
+                                                                                                    <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
+                                                                                                )
+                                                                                            })}
+                                                                                        </div>
+                                                                                    </HeightTransition>
+                                                                                </>
+                                                                            }
 
-                                        <button className={'btn btn-primary w-100 shadow1 mt-2'}>Soir</button>
+                                                                            {evening.length > 0 &&
+                                                                                <>
+                                                                                    <button data-id={'1'} onClick={toggleShowEvening} className={'btn btn-primary w-100 shadow1 mt-2 merri'}>Soir</button>
 
+                                                                                    <HeightTransition show={showEvening["1"]}>
+                                                                                        <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
+                                                                                            {evening.length > 0 && evening.map(el => {
+                                                                                                return (
+                                                                                                    <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
+                                                                                                )
+                                                                                            })}
+                                                                                        </div>
+                                                                                    </HeightTransition>
+                                                                                </>
+                                                                            }
+                                                                        </div>
 
-                                        {evening.map(el => {
-                                            return (
-                                                <button key={el}>{el}</button>
+                                                                        {choice !== null &&
+                                                                            <>
+                                                                                <div className={'mt-4'}>
+                                                                                    <p className={'merri text-primary'}>Heure choisie: <span className={'merri text-secondary'}>{choice}</span></p>
+                                                                                </div>
+                                                                                <div className={'mt-4'}>
+                                                                                    <label className={'merri text-primary mb-2'}>Nombres de convives : </label>
+                                                                                    <input ref={conviveRef} className={'form-control border border-primary shadow1'} type={'number'} min={1} max={rotation?.rotation === '0' ? maxCustomer.value : (morning.includes(choice) ? (maxCustomer.value - rotation.morning) : (maxCustomer.value - rotation.evening))} required={true}/>
+                                                                                </div>
+                                                                                <div>
+                                                                                    <label className={'merri text-primary mt-2 mb-2'}>Si vous avez des allergies : </label>
+                                                                                    <input ref={allergenRef} placeholder={'Noix, ...'}  className={'form-control border border-primary shadow1'} type={'text'} />
+                                                                                </div>
+                                                                                <button className={'btn btn-secondary w-100 merri shadow1 my-4'} type={'submit'}>Réserver</button>
+                                                                            </>
+                                                                        }
+                                                                    </>
+                                                                )
+                                                            }
+                                                        </>
+                                                    }
+                                                </>
                                             )
-                                        })}
-                                    </div>
-                                    <div>
-                                        <label>Nombres de convives : </label>
-                                        <Input type={'number'} min={1} required={true}/>
-                                    </div>
-                                    <div>
-                                        <label>Si vous avez des allergies : </label>
-                                        <input  className={'form-control border border-primary shadow1'} type={'text'} />
-                                    </div>
+                                        }
+
+                                    </form>
                                 </>
-                            }
-                        </form>
+                            )
+                        }
+
                     </FormDiv>
                 </Container>
             </Main>

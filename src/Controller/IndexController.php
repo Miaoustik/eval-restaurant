@@ -18,6 +18,7 @@ class IndexController extends AbstractController
     #[Route(path: '/inscription', methods: ['GET'])]
     #[Route(path: '/login', methods: ['GET'])]
     #[Route(path: '/admin/horaire', methods: ['GET'])]
+    #[Route(path: '/admin/menu', methods: ['GET'])]
     public function index (): Response
     {
         return $this->render('base.html.twig');

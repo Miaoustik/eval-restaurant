@@ -26,6 +26,9 @@ class Reservation
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $allergens = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $hour = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -75,6 +78,18 @@ class Reservation
     public function setAllergens(?string $allergens): self
     {
         $this->allergens = $allergens;
+
+        return $this;
+    }
+
+    public function getHour(): ?\DateTimeInterface
+    {
+        return $this->hour;
+    }
+
+    public function setHour(\DateTimeInterface $hour): self
+    {
+        $this->hour = $hour;
 
         return $this;
     }

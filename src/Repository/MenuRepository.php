@@ -63,4 +63,12 @@ class MenuRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findAllEager()
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r', 'f')
+            ->leftJoin('r.formulas', 'f')
+            ->getQuery()
+            ->getResult();
+    }
 }

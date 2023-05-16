@@ -6,6 +6,7 @@ use App\Repository\MenuRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MenuRepository::class)]
 class Menu
@@ -13,11 +14,14 @@ class Menu
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['GET_MENU'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Groups(['GET_MENU'])]
     private ?string $title = null;
 
+    #[Groups(['GET_MENU'])]
     #[ORM\OneToMany(mappedBy: 'menu', targetEntity: Formula::class, cascade: ['persist', 'remove'])]
     private Collection $formulas;
 
