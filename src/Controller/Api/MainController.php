@@ -5,6 +5,7 @@ namespace App\Controller\Api;
 use App\Entity\Reservation;
 use App\Entity\Rotation;
 use App\Repository\CategoryRepository;
+use App\Repository\FormulaRepository;
 use App\Repository\HoraireDayRepository;
 use App\Repository\ImageRepository;
 use App\Repository\MaxCustomerRepository;

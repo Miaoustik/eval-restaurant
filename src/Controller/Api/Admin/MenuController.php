@@ -2,6 +2,8 @@
 
 namespace App\Controller\Api\Admin;
 
+use App\Entity\Formula;
+use App\Entity\Menu;
 use App\Repository\FormulaRepository;
 use App\Repository\MenuRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -61,6 +63,93 @@ class MenuController extends AbstractController
             return new JsonResponse(data: [
                 'errorMessage' => $e->getMessage(),
                 'errorCode' => $e->getCode()
+            ], status: 500);
+        }
+    }
+
+    #[Route('/create', methods: ['POST'])]
+    public function create (Request $request, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+        $menu = (new Menu())->setTitle($data->title);
+
+        foreach ($data->formulas as $formula) {
+            $formula = (new Formula())
+                ->setTitle($formula->title)
+                ->setDescription($formula->description)
+                ->setPrice($formula->price);
+
+            $menu->addFormula($formula);
+        }
+
+        try {
+            $manager->persist($menu);
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ], status: 500);
+        }
+    }
+
+    #[Route(path: '/delete-formula', methods: ['POST'])]
+    public function deleteFormula (FormulaRepository $repository, Request $request, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+        $formula = $repository->find($data->id);
+
+        try {
+            $manager->remove($formula);
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ], status: 500);
+        }
+    }
+
+    #[Route(path: '/delete-menu', methods: ['POST'])]
+    public function deleteMenu (MenuRepository $repository, Request $request, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+        $menu = $repository->find($data->id);
+
+        try {
+            $manager->remove($menu);
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ], status: 500);
+        }
+    }
+
+    #[Route(path: '/add-formula', methods: ['POST'])]
+    public function addFormula (MenuRepository $repository, Request $request, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+        $menu = $repository->find($data->menuId);
+        $formula = (new Formula())
+            ->setTitle($data->formula->title)
+            ->setDescription($data->formula->description)
+            ->setPrice($data->formula->price);
+        $menu->addFormula($formula);
+
+        try {
+            $manager->flush();
+            return new JsonResponse(data: [
+                'formulaId' => $formula->getId()
+            ], status: Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
             ], status: 500);
         }
     }

@@ -17,11 +17,30 @@ export default function (controllerRef) {
         return http.post('/api/admin/menu/modify-formula', data)
     }
 
+    const createMenu = (data) => {
+        return http.post('/api/admin/menu/create', data)
+    }
+
+    const deleteFormula = (data) => {
+        return http.post('/api/admin/menu/delete-formula', data)
+    }
+
+    const addFormula = (data) => {
+        return http.post('/api/admin/menu/add-formula', data)
+    }
+
+    const deleteMenu = (data) => {
+        return http.post('/api/admin/menu/delete-menu', data)
+    }
 
     const repository = {
         get,
         modifyMenuTitle,
-        modifyMenuFormula
+        modifyMenuFormula,
+        createMenu,
+        deleteFormula,
+        addFormula,
+        deleteMenu
     }
 
     return {

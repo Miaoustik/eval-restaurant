@@ -4,7 +4,7 @@ import styled, {keyframes} from "styled-components";
 export default function ({children, show = false, className, start = false}) {
 
     if (start) {
-        return <DivStart show={show === true ? '1' : '0'} >
+        return <DivStart show={'1'} >
             <SecondDiv>
                 {children}
             </SecondDiv>
