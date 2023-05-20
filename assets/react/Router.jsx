@@ -13,6 +13,7 @@ import AdminImage from "./Routes/Admin/AdminImage";
 import AdminCarte from "./Routes/Admin/AdminCarte";
 import AdminHoraire from "./Routes/Admin/AdminHoraire";
 import AdminMenu from "./Routes/Admin/AdminMenu";
+import AdminReservations from "./Routes/Admin/AdminReservations";
 
 export default function Router () {
 
@@ -29,7 +30,8 @@ export default function Router () {
         loadingLogin,
         loadingLogout,
         error,
-        isAdmin
+        isAdmin,
+        repository: userRepository
     } = useUser(controllerRef)
 
 
@@ -88,6 +90,7 @@ export default function Router () {
                 horaires={horaires}
                 user={user}
                 isAdmin={isAdmin}
+                userRepository={userRepository}
             />
         },
         {
@@ -118,6 +121,14 @@ export default function Router () {
         {
             path: '/admin/menu',
             element: <AdminMenu
+                user={user}
+                isAdmin={isAdmin}
+                horaires={horaires}
+            />
+        },
+        {
+            path: '/admin/reservation',
+            element: <AdminReservations
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}

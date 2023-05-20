@@ -45,11 +45,16 @@ export default function (controllerRef) {
             .then(() => login({username: data.username, password: data.password}, controllerRef))
     }
 
+    const getUserInfo = (data, controllerRef) => {
+        return http.post('/api/inscription/user-info', data, controllerRef)
+    }
+
     const repository = {
         get,
         login,
         logout,
-        register
+        register,
+        getUserInfo
     }
 
     return {

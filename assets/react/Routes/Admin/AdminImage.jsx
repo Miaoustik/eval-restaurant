@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Header from "../../Components/Header";
 import {Container} from "react-bootstrap";
 import useControllerRef from "../../Hooks/useControllerRef";
@@ -11,6 +11,7 @@ import NewImages from "../../Components/Admin/Images/NewImages";
 import HeightTransition from "../../Components/Ui/HeightTransition";
 import Footer from "../../Components/Footer";
 import useHeightTransition from "../../Hooks/useHeightTransition";
+import useScrollToTop from "../../Hooks/useScrollToTop";
 
 export default function ({isAdmin, user, horaires}) {
 
@@ -40,6 +41,7 @@ export default function ({isAdmin, user, horaires}) {
     const propsCurrent = useCurrentImages(images, loadingImage, repository, setImages, setRefreshImg)
     const propsNew = useNewImages(images, loadingImage, repository, propsCurrent.setInputLoaded)
 
+   useScrollToTop()
 
 
     return (

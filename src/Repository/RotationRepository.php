@@ -63,4 +63,15 @@ class RotationRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+    public function findOneByDateEager(\DateTime $date)
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r', 'rrm', 'rre')
+            ->leftJoin('r.reservationsMorning', 'rrm')
+            ->leftJoin('r.reservationsEvening', 'rre')
+            ->where('r.date = :date')
+            ->setParameter('date', $date)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

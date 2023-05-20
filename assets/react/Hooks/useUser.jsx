@@ -53,6 +53,7 @@ export default function (controllerRef) {
         loadingLogin,
         loadingLogout,
         loadingRegister,
-        isAdmin
+        isAdmin,
+        repository
     }
 }

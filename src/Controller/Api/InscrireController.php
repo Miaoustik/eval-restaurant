@@ -3,6 +3,7 @@
 namespace App\Controller\Api;
 
 use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -41,5 +42,19 @@ class InscrireController extends AbstractController
                 'message' => $e->getMessage()
             ], status: Response::HTTP_BAD_GATEWAY);
         }
+    }
+
+    #[Route('/user-info', methods: ['POST'])]
+    public function getUserInfo (Request $request, UserRepository $repository): Response
+    {
+        $data = json_decode($request->getContent());
+
+        /** @var User|null $user */
+        $user = $repository->findOneByEmail($data->email);
+
+        return new JsonResponse(data: [
+            'convive' => $user->getNumber(),
+            'allergen' => $user->getAllergens()
+        ]);
     }
 }

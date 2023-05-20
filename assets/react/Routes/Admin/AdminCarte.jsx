@@ -8,11 +8,14 @@ import useAddDishAdmin from "../../Hooks/Admin/useAddDishAdmin";
 import AddDishAdmin from "../../Components/Admin/Carte/AddDishAdmin";
 import useControllerRef from "../../Hooks/useControllerRef";
 import useCarteRepository from "../../Hooks/Repository/useCarteRepository";
+import useScrollToTop from "../../Hooks/useScrollToTop";
 
 export default function ({horaires, user, isAdmin}) {
 
     const controllerRef = useControllerRef()
     const {carte, error, repository, setCarte} = useCarteRepository(controllerRef)
+
+    useScrollToTop()
 
     const categories = carte.map(el => {
         return {

@@ -5,11 +5,12 @@ import {Container} from "react-bootstrap";
 import useHoraireAdmin from "../../Hooks/Admin/useHoraireAdmin";
 import useControllerRef from "../../Hooks/useControllerRef";
 import HoraireAdmin from "../../Components/Admin/Horaire/HoraireAdmin";
+import useScrollToTop from "../../Hooks/useScrollToTop";
 
 export default function ({horaires, repository, user, isAdmin}) {
 
     const controllerRef = useControllerRef()
-
+    useScrollToTop()
     const props = useHoraireAdmin(controllerRef, horaires, repository)
 
     return (
