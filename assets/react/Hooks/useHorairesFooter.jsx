@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import useHoraireRepository from "./Repository/usehoraireRepository";
+import useHoraireRepository from "./Repository/useHoraireRepository";
 
 export default function (controllerRef) {
     
