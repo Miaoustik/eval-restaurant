@@ -17,6 +17,23 @@ export default function (controllerRef) {
             .then(res => handleResponse(res, newSetHoraires))
     }
 
+    const resetHoraire = (days) => {
+        setHoraires(prev => {
+            const news = {...prev}
+            days.forEach(day => {
+                news[day] = {
+                    morningStart: '',
+                    morningEnd: '',
+                    eveningStart: '',
+                    eveningEnd: '',
+                    morningClosed: false,
+                    eveningClosed: false
+                }
+            })
+            return news
+        })
+    }
+
     const getAll = () => {
         return http.get('/api/horaire')
             .then(res => handleResponse(res, setHoraires))
@@ -34,7 +51,8 @@ export default function (controllerRef) {
     const repository = {
         getAll,
         getAllParsed,
-        modify
+        modify,
+        resetHoraire
     }
 
     return {

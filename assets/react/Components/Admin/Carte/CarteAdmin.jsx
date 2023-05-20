@@ -1,12 +1,16 @@
 import React from "react";
 import HeightTransition from "../../Ui/HeightTransition";
-import InputWithRef from "../../Ui/InputWithRef";
 import DishForm from "../../Ui/DishForm";
 
 export default function (props) {
     return (
         <>
             <h2 className={'merri text-primary my-4'}>Gestion de la carte</h2>
+            <form onSubmit={props.handleSubmitNewCat}>
+                <label className={'merri text-primary mt-4 mb-2'}>Nouvelle catégorie : </label>
+                <input ref={props.catRef} type={'text'} className={'form-control'} required={true} />
+                <button className={'btn btn-primary w-100 shadow1 my-4'}>Créer une catégorie</button>
+            </form>
             {props.carte.map(e => {
                 return (
                     <React.Fragment key={e.id}>

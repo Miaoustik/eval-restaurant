@@ -270,8 +270,6 @@ export default function ({user, isAdmin, horaires}) {
                 if (res.ok) {
                     e.target.scrollIntoView()
                     setSubmittedNew(true)
-
-                    //TODO backend pour récupérer les id crée
                     setRefreshData(s => !s)
 
                     setShowNewMenu(prev => {

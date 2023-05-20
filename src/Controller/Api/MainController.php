@@ -51,11 +51,9 @@ class MainController extends AbstractController
         $horaires = $horaireDayRepository->findAll();
         $horairesJson = null;
 
-        if ($horaires) {
-            $horairesJson = $this->serializer->serialize($horaires, JsonEncoder::FORMAT, [
-                'groups' => ['HOME_DATA']
-            ]);
-        }
+        $horairesJson = $this->serializer->serialize((count($horaires) !== 0 ? $horaires : null), JsonEncoder::FORMAT, [
+            'groups' => ['HOME_DATA']
+        ]);
 
         return new JsonResponse(data: $horairesJson, json: true);
     }

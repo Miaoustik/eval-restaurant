@@ -6,6 +6,8 @@ export default function (carte, repository, setCarte, categories) {
 
     const inputsRef = useRef({})
 
+    const catRef = useRef()
+
     const {show: showCategory, toggleShow: toggleShowCategory} = useHeightTransition()
     const {show: showModify, toggleShow: toggleShowModify, setShow: setShowModify} = useHeightTransition()
     const {show: showDelete, toggleShow: toggleShowDelete, setShow: setShowDelete} = useHeightTransition()
@@ -14,6 +16,23 @@ export default function (carte, repository, setCarte, categories) {
     useEffect(() => {
         repository.get()
     }, [])
+
+    const handleSubmitNewCat = (e) => {
+        e.preventDefault()
+        const data = {
+            name: catRef.current.value
+        }
+        console.log(data)
+
+        repository.createCategory(data)
+            .then((res) => {
+                setCarte(prev => {
+                    const news = [...prev]
+                    news.push(res.data)
+                    return news
+                })
+            })
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -80,7 +99,6 @@ export default function (carte, repository, setCarte, categories) {
                         return n
                     })
                 }
-                console.log(res)
             })
     }
 
@@ -95,6 +113,8 @@ export default function (carte, repository, setCarte, categories) {
         inputsRef,
         handleDelete,
         showDelete,
-        toggleShowDelete
+        toggleShowDelete,
+        catRef,
+        handleSubmitNewCat
     }
 }

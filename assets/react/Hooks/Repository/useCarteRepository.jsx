@@ -30,11 +30,16 @@ export default function (controllerRef) {
         return http.post('/api/admin/carte/delete-dish', id)
     }
 
+    const createCategory = (data) => {
+        return http.post('/api/admin/carte/create-category', data)
+    }
+
     const repository = {
         get,
         modify,
         createDish,
-        deleteDish
+        deleteDish,
+        createCategory
     }
 
     return {

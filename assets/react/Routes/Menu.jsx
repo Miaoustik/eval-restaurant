@@ -20,7 +20,6 @@ export default function ({horaires, user, isAdmin}) {
         repository.get()
             .then(res => {
                 if (res.ok) {
-                    console.log(res.data)
                     setMenus(res.data)
                 }
             })

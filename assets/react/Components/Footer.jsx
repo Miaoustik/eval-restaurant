@@ -11,25 +11,33 @@ export default function ({ horaires }) {
                     <Half>
                         <p className={'merri text-secondary text-decoration-underline'}>Nos horaires d'ouverture : </p>
                         <ul className={'list-unstyled ps-4'}>
-                            {horaires.map(e => {
-                                return (
-                                    <li key={e.dayName} className={'my-4 d-flex justify-content-start'}>
-                                        <P className={'display-table'}>{e.dayName}</P>
-                                        <div>
-                                            {e.morning === null && e.evening === null &&
-                                                <p className={'text-info'}>Fermé</p>
-                                            }
+                            {horaires
+                                ? (
+                                    <>
+                                        {horaires.map(e => {
+                                            return (
+                                                <li key={e.dayName} className={'my-4 d-flex justify-content-start'}>
+                                                    <P className={'display-table'}>{e.dayName}</P>
+                                                    <div>
+                                                        {e.morning === null && e.evening === null &&
+                                                            <p className={'text-info'}>Fermé</p>
+                                                        }
 
-                                            {e.morning &&
-                                                <p className={'p-0 m-0'}>{e.morning}</p>
-                                            }
-                                            {e.evening &&
-                                                <p className={'p-0 m-0'}>{e.evening}</p>
-                                            }
-                                        </div>
-                                    </li>
+                                                        {e.morning &&
+                                                            <p className={'p-0 m-0'}>{e.morning}</p>
+                                                        }
+                                                        {e.evening &&
+                                                            <p className={'p-0 m-0'}>{e.evening}</p>
+                                                        }
+                                                    </div>
+                                                </li>
+                                            )
+                                        })}
+                                    </>
                                 )
-                            })}
+                                : (<p>Veuillez définir des horaires.</p>)
+                            }
+
                         </ul>
                     </Half>
                     <div>

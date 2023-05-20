@@ -2,9 +2,12 @@
 
 namespace App\Controller\Api\Admin;
 
+use App\Entity\MaxCustomer;
 use App\Entity\Rotation;
+use App\Repository\MaxCustomerRepository;
 use App\Repository\ReservationRepository;
 use App\Repository\RotationRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -38,5 +41,32 @@ class AdminController extends AbstractController
         ]);
 
         return new JsonResponse(data: $json, json: true);
+    }
+
+    #[Route('/update-max', methods: ['POST'])]
+    public function updateMax (Request $request, MaxCustomerRepository $repository, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+
+        $max = $repository->findAll();
+
+        if (count($max) === 0) {
+            $max = new MaxCustomer();
+            $max->setValue($data->max);
+            $manager->persist($max);
+        } else {
+            $max[0]->setValue($data->max);
+        }
+
+        try {
+            $manager->flush();
+            return new JsonResponse(status: Response::HTTP_NO_CONTENT);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: [
+                "errorCode" => $e->getCode(),
+                "errorMessage" => $e->getMessage()
+            ], status: 500);
+        }
+
     }
 }

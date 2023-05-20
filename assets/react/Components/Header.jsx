@@ -31,7 +31,7 @@ export default function ({ light = '0', user, isAdmin }) {
                                 <OffCanvasA light={light} to={'/admin/carte'} className={'mb-2'}>Gestion de la carte</OffCanvasA>
                                 <OffCanvasA light={light} to={'/admin/horaire'} className={'mb-2'}>Gestion des horaires</OffCanvasA>
                                 <OffCanvasA light={light} to={'/admin/menu'} className={'mb-2'}>Gestion des menus</OffCanvasA>
-                                <OffCanvasA light={light} to={'/admin/reservation'} className={'mb-2'}>Voir les réservations</OffCanvasA>
+                                <OffCanvasA light={light} to={'/admin/reservation'} className={'mb-2'}>Gestion des réservations</OffCanvasA>
                             </>
                         }
 

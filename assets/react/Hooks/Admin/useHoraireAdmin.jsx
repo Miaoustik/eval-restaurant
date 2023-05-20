@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
 import {format} from "../../Components/Utils/formatHoraire";
+const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 
 export default function (controllerRef, horaires, repository) {
 
@@ -10,7 +11,8 @@ export default function (controllerRef, horaires, repository) {
     const [submittedOk, setSubmittedOk] = useState(false)
 
     useEffect(() => {
-        if (horaires.length > 0) {
+        setLoaded(false)
+        if (horaires?.length > 0) {
             setNewHoraire(prev => {
                 const news = {...prev}
 
@@ -43,6 +45,23 @@ export default function (controllerRef, horaires, repository) {
                 })
                 return news
             })
+            setLoaded(true)
+        } else {
+            setNewHoraire(prev => {
+                const news = {...prev}
+                days.forEach(day => {
+                    news[day] = {
+                        morningStart: '',
+                        morningEnd: '',
+                        eveningStart: '',
+                        eveningEnd: '',
+                        morningClosed: true,
+                        eveningClosed: true
+                    }
+                })
+                return news
+            })
+
             setLoaded(true)
         }
     }, [horaires])
@@ -182,9 +201,7 @@ export default function (controllerRef, horaires, repository) {
 
         const data = {}
 
-        horaires.forEach(el => {
-            const day = el.dayName
-
+        days.forEach(day => {
             data[day] = {
                 morningStart: newHoraire[day].morningClosed ? '' : newHoraire[day].morningStart,
                 morningEnd: newHoraire[day].morningClosed ? '' : newHoraire[day].morningEnd,
@@ -197,6 +214,7 @@ export default function (controllerRef, horaires, repository) {
 
         repository.modify(data)
             .then(() => setSubmittedOk(true))
+            .then(() => repository.getAllParsed())
     }
 
     return {

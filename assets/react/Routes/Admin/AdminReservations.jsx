@@ -1,10 +1,11 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useRef} from "react";
 import Header from "../../Components/Header";
 import {Container} from "react-bootstrap";
 import Footer from "../../Components/Footer";
 import useControllerRef from "../../Hooks/useControllerRef";
 import httpApi from "../../Components/Utils/httpApi";
 import LoadingFetch from "../../Components/Ui/LoadingFetch";
+
 
 export default function ({horaires, user, isAdmin}) {
 
@@ -17,6 +18,7 @@ export default function ({horaires, user, isAdmin}) {
     const [loadingRotation, setLoadingRotation] = useState(false)
     const [maxMorning, setMaxMorning] = useState(0)
     const [maxEvening, setMaxEvening] = useState(0)
+    const maxRef = useRef()
 
     const handleInput = (e) => {
         setInput(e.target.value)
@@ -37,9 +39,6 @@ export default function ({horaires, user, isAdmin}) {
                         const copy = {...res.data}
                         let morning = 0
                         let evening = 0
-
-
-                        console.log(copy)
 
                         copy.morning?.forEach(el => {
                             morning += el.customerNumber
@@ -66,10 +65,32 @@ export default function ({horaires, user, isAdmin}) {
         }
     }, [input])
 
+    const handleMaxSubmit = (e) => {
+        e.preventDefault()
+
+        const data = {
+            max: maxRef.current.value
+        }
+
+        http.post('/api/admin/update-max', data)
+            .then(res => {
+                console.log(res.data)
+            })
+
+    }
+
     return (
         <>
             <Header isAdmin={isAdmin} user={user} />
             <Container className={'mainContainer'}>
+
+
+                <form onSubmit={handleMaxSubmit}>
+                    <label className={'text-primary merri my-3'}>Modifier le nombre max de clients du restaurant : </label>
+                    <input ref={maxRef} className={'form-control'} type={'number'} min={0} required={true} />
+                    <button className={'btn btn-primary w-100 shadow1 my-4'}>Enregistrer</button>
+                </form>
+
                 <h2 className={'merri text-primary my-4'}>Voir les réservations</h2>
 
                 <form>

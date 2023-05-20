@@ -63,6 +63,25 @@ class CarteController extends AbstractController
         }
     }
 
+    #[Route('/create-category', methods: ['POST'])]
+    public function createCategory(Request $request, EntityManagerInterface $manager): Response
+    {
+        $data = json_decode($request->getContent());
+
+        $category = (new Category())->setName($data->name);
+        $manager->persist($category);
+
+        try {
+            $manager->flush();
+            $json = $this->serializer->serialize($category, JsonEncoder::FORMAT, [
+                'groups' => ['GET_CARTE']
+            ]);
+            return new JsonResponse(data: $json, json: true);
+        } catch (\Exception $e) {
+            return new JsonResponse(data: ['error' => $e->getMessage()], status: Response::HTTP_BAD_REQUEST);
+        }
+    }
+
     #[Route(path: '/create-dish', methods: ['POST'])]
     public function createDish (Request $request, CategoryRepository $categoryRepository): Response
     {

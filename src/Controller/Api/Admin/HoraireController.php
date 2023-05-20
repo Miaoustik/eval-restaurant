@@ -2,6 +2,7 @@
 
 namespace App\Controller\Api\Admin;
 
+use App\Entity\HoraireDay;
 use App\Repository\HoraireDayRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
@@ -28,6 +29,16 @@ class HoraireController extends AbstractController
 
         $newHoraires = json_decode($request->getContent());
         $horaires = $repository->findAll();
+
+        if (count($horaires) === 0) {
+            $days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+            foreach ($days as $day) {
+                $newHoraire = (new HoraireDay())->setDayName($day);
+                $horaires[] = $newHoraire;
+                $manager->persist($newHoraire);
+            }
+        }
+
 
         foreach ($horaires as $horaire) {
 

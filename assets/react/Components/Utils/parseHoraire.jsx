@@ -2,6 +2,10 @@ const jourOrder = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 
 
 export default function (data) {
 
+    if (data === null) {
+        return null
+    }
+
     function buildHoraire (start = null, end = null) {
 
         function getHoursMins(date) {
