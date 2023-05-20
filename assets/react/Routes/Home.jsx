@@ -7,14 +7,21 @@ import nature from '../../images/nature-sprite.png';
 import useScrollToTop from "../Hooks/useScrollToTop";
 import useControllerRef from "../Hooks/useControllerRef";
 import useImagesHome from "../Hooks/useImagesHome";
+import {useNavigate} from "react-router-dom";
 export default function ({ horaires, user, isAdmin }) {
 
     const controllerRef = useControllerRef()
     const images = useImagesHome(controllerRef)
+    const navigate = useNavigate()
 
     const [index, setIndex] = useState(0);
 
     useScrollToTop()
+
+    const handleReserve = (e) => {
+        e.preventDefault()
+        navigate('/reserver')
+    }
 
     const handleSelect = (selectedIndex, e) => {
         setIndex(selectedIndex);
@@ -44,7 +51,7 @@ export default function ({ horaires, user, isAdmin }) {
                 <div className={'d-flex justify-content-center bg-black py-2'}>
                     <ButtonContainer>
                         <Mask>Réserver</Mask>
-                        <ReserveBtn url={nature} className={'text-white'} >Réserver</ReserveBtn>
+                        <ReserveBtn onClick={handleReserve} url={nature} className={'text-white'} >Réserver</ReserveBtn>
                     </ButtonContainer>
                 </div>
             </Main>

@@ -1,8 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
+import {useNavigate} from "react-router-dom";
 
 export default function ({ horaires }) {
+    const navigate = useNavigate()
+    const handleReserve = (e) => {
+        e.preventDefault()
+        navigate('/reserver')
+    }
     return (
         <Footer className={'w-100 text-primary pb-5'}>
             <Container>
@@ -42,7 +48,7 @@ export default function ({ horaires }) {
                     </Half>
                     <div>
                         <p className={'merri text-secondary text-decoration-underline'}>Réserver une table: </p>
-                        <Button className={'merri btn btn-outline-primary w-100 text-primary mb-5'}>Réserver</Button>
+                        <Button onClick={handleReserve} className={'merri btn btn-outline-primary w-100 text-primary mb-5'}>Réserver</Button>
                         <a href={'#'} className={'merri text-secondary hoverPrimary'}>Mentions Légales</a>
                     </div>
                 </div>
