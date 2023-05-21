@@ -14,7 +14,13 @@ export default function (controllerRef) {
 
     const getAllParsed = () => {
         return http.get('/api/horaire')
+            .then(res => {
+                console.log('before parse', res)
+                console.log('after parse', parseHoraire(res.data))
+                return res
+            })
             .then(res => handleResponse(res, newSetHoraires))
+
     }
 
     const resetHoraire = (days) => {

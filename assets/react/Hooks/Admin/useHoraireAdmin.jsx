@@ -109,8 +109,8 @@ export default function (controllerRef, horaires, repository) {
         const toDate = (horaire) => {
             const date = new Date()
             const splitHoraire = horaire.split(':')
-            date.setUTCHours(parseInt(splitHoraire[0], 10))
-            date.setUTCMinutes(parseInt(splitHoraire[1], 10))
+            date.setHours(parseInt(splitHoraire[0], 10))
+            date.setMinutes(parseInt(splitHoraire[1], 10))
             return date
         }
 
@@ -211,6 +211,9 @@ export default function (controllerRef, horaires, repository) {
                 eveningClosed: newHoraire[day].eveningClosed
             }
         })
+
+        console.log('data', data)
+        console.log('newHoraire', newHoraire)
 
         repository.modify(data)
             .then(() => setSubmittedOk(true))

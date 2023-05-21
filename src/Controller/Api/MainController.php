@@ -49,7 +49,6 @@ class MainController extends AbstractController
     public function getData (HoraireDayRepository $horaireDayRepository): Response
     {
         $horaires = $horaireDayRepository->findAll();
-        $horairesJson = null;
 
         $horairesJson = $this->serializer->serialize((count($horaires) !== 0 ? $horaires : null), JsonEncoder::FORMAT, [
             'groups' => ['HOME_DATA']
@@ -94,7 +93,7 @@ class MainController extends AbstractController
     {
         $data = json_decode($request->getContent());
 
-        $date = new DateTime($data->date, new \DateTimeZone('UTC'));
+        $date = new DateTime($data->date);
 
         /** @var Rotation|null $rotation */
         $rotation = $repository->findOneByDate($date);
@@ -122,7 +121,7 @@ class MainController extends AbstractController
     public function reserver (Request $request, RotationRepository $rotationRepository, MaxCustomerRepository $maxCustomerRepository, EntityManagerInterface $manager): Response
     {
         $data = json_decode($request->getContent());
-        $date = new DateTime($data->dateInput, new \DateTimeZone('Europe/Paris'));
+        $date = new DateTime($data->dateInput);
 
 
 

@@ -50,8 +50,8 @@ class HoraireController extends AbstractController
             $morningEnd = null;
 
             if ($morningClosed === false) {
-                $morningStart = new \DateTime($newDay->morningStart, new \DateTimeZone("Europe/Paris"));
-                $morningEnd = new \DateTime($newDay->morningEnd, new \DateTimeZone("Europe/Paris"));
+                $morningStart = new \DateTime($newDay->morningStart, new \DateTimeZone('Europe/Paris'));
+                $morningEnd = new \DateTime($newDay->morningEnd, new \DateTimeZone('Europe/Paris'));
             }
 
             $horaire->setMorningStart($morningStart);
@@ -62,8 +62,8 @@ class HoraireController extends AbstractController
             $eveningEnd = null;
 
             if ($eveningClosed === false) {
-                $eveningStart = new \DateTime($newDay->eveningStart, new \DateTimeZone("Europe/Paris"));
-                $eveningEnd = new \DateTime($newDay->eveningEnd, new \DateTimeZone("Europe/Paris"));
+                $eveningStart = new \DateTime($newDay->eveningStart);
+                $eveningEnd = new \DateTime($newDay->eveningEnd);
             }
 
             $horaire->setEveningStart($eveningStart);
