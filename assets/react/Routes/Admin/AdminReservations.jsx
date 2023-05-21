@@ -44,7 +44,7 @@ export default function ({horaires, user, isAdmin}) {
                             morning += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
+                                el.hour = date.getHours() + 'h' + date.getMinutes()
                             }
                         })
 
@@ -52,7 +52,7 @@ export default function ({horaires, user, isAdmin}) {
                             evening += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
+                                el.hour = date.getHours() + 'h' + date.getMinutes()
                             }
                         })
                         setMaxMorning(morning)

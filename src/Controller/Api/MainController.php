@@ -94,7 +94,7 @@ class MainController extends AbstractController
     {
         $data = json_decode($request->getContent());
 
-        $date = new DateTime($data->date, new \DateTimeZone('Europe/Paris'));
+        $date = new DateTime($data->date);
 
         /** @var Rotation|null $rotation */
         $rotation = $repository->findOneByDate($date);
@@ -122,7 +122,7 @@ class MainController extends AbstractController
     public function reserver (Request $request, RotationRepository $rotationRepository, MaxCustomerRepository $maxCustomerRepository, EntityManagerInterface $manager): Response
     {
         $data = json_decode($request->getContent());
-        $date = new DateTime($data->dateInput, new \DateTimeZone('Europe/Paris'));
+        $date = new DateTime($data->dateInput);
 
         $hourSplit = explode(':', ($data->choice));
         $dateHour = clone $date;
