@@ -46,7 +46,6 @@ export default function ({horaires, user, isAdmin, userRepository}) {
                 email: user
             }, controllerRef)
                 .then(res => {
-                    console.log(res)
                     setUserDefault(res.data)
                 })
         }
@@ -122,8 +121,9 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             } else {
                 const data = {
                     date: dateInput,
-                    hour: new Date().toString()
+                    hour: new Date().toUTCString()
                 }
+
 
                 repository.get(data)
                     .finally(() => setLoadingRotation(false))
@@ -170,6 +170,8 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             allergen: allergenRef.current.value,
             morning: morning.includes(choice),
         }
+
+        console.log(obj)
 
         repository.reserver(obj)
             .then((res) => {

@@ -113,20 +113,20 @@ class AppFixtures extends Fixture
 
         $horaire1 = (new HoraireDay())
             ->setDayName('Lundi')
-            ->setMorningStart(new \DateTime("12:00:00"))
-            ->setMorningEnd(new \DateTime("14:00:00"))
-            ->setEveningStart(new \DateTime("16:00:00"))
-            ->setEveningEnd(new \DateTime("22:00:00"))
+            ->setMorningStart(new \DateTime("12:00:00", new \DateTimeZone('UTC')))
+            ->setMorningEnd(new \DateTime("14:00:00", new \DateTimeZone('UTC')))
+            ->setEveningStart(new \DateTime("16:00:00", new \DateTimeZone('UTC')))
+            ->setEveningEnd(new \DateTime("22:00:00", new \DateTimeZone('UTC')))
         ;
 
         $manager->persist($horaire1);
 
         $horaire2 = (new HoraireDay())
             ->setDayName('Mardi')
-            ->setMorningStart(new \DateTime("12:00:00"))
-            ->setMorningEnd(new \DateTime("14:00:00"))
-            ->setEveningStart(new \DateTime("16:00:00"))
-            ->setEveningEnd(new \DateTime("22:00:00"))
+            ->setMorningStart(new \DateTime("12:00:00", new \DateTimeZone('UTC')))
+            ->setMorningEnd(new \DateTime("14:00:00", new \DateTimeZone('UTC')))
+            ->setEveningStart(new \DateTime("16:00:00", new \DateTimeZone('UTC')))
+            ->setEveningEnd(new \DateTime("22:00:00", new \DateTimeZone('UTC')))
         ;
         $manager->persist($horaire2);
 
@@ -138,30 +138,30 @@ class AppFixtures extends Fixture
 
         $horaire4 = (new HoraireDay())
             ->setDayName('Jeudi')
-            ->setMorningStart(new \DateTime("12:00:00"))
-            ->setMorningEnd(new \DateTime("14:00:00"))
-            ->setEveningStart(new \DateTime("16:00:00"))
-            ->setEveningEnd(new \DateTime("22:00:00"))
+            ->setMorningStart(new \DateTime("12:00:00", new \DateTimeZone('UTC')))
+            ->setMorningEnd(new \DateTime("14:00:00", new \DateTimeZone('UTC')))
+            ->setEveningStart(new \DateTime("16:00:00", new \DateTimeZone('UTC')))
+            ->setEveningEnd(new \DateTime("22:00:00", new \DateTimeZone('UTC')))
         ;
         $manager->persist($horaire4);
 
 
         $horaire5 = (new HoraireDay())
             ->setDayName('Vendredi')
-            ->setMorningStart(new \DateTime("12:00:00"))
-            ->setMorningEnd(new \DateTime("14:00:00"))
-            ->setEveningStart(new \DateTime("16:00:00"))
-            ->setEveningEnd(new \DateTime("22:00:00"))
+            ->setMorningStart(new \DateTime("12:00:00", new \DateTimeZone('UTC')))
+            ->setMorningEnd(new \DateTime("14:00:00", new \DateTimeZone('UTC')))
+            ->setEveningStart(new \DateTime("16:00:00", new \DateTimeZone('UTC')))
+            ->setEveningEnd(new \DateTime("22:00:00", new \DateTimeZone('UTC')))
         ;
         $manager->persist($horaire5);
 
 
         $horaire6 = (new HoraireDay())
             ->setDayName('Samedi')
-            ->setMorningStart(new \DateTime("12:00:00"))
-            ->setMorningEnd(new \DateTime("14:00:00"))
-            ->setEveningStart(new \DateTime("16:00:00"))
-            ->setEveningEnd(new \DateTime("22:00:00"))
+            ->setMorningStart(new \DateTime("12:00:00", new \DateTimeZone('UTC')))
+            ->setMorningEnd(new \DateTime("14:00:00", new \DateTimeZone('UTC')))
+            ->setEveningStart(new \DateTime("16:00:00", new \DateTimeZone('UTC')))
+            ->setEveningEnd(new \DateTime("22:00:00", new \DateTimeZone('UTC')))
         ;
         $manager->persist($horaire6);
 
