@@ -4,6 +4,15 @@ $info: #F7A458;
 $navbar-toggler-focus-width: 0;
 $offcanvas-horizontal-width: 80%;
 
+
+$container-max-widths: (
+        sm: 540px,
+        md: 541px,
+        lg: 542px,
+        xl: 543px,
+        xxl: 544px
+);
+
 @import "~bootstrap/scss/bootstrap";
 @import '~bootstrap-icons/font/bootstrap-icons.css';
 

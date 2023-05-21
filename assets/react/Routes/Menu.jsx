@@ -30,35 +30,37 @@ export default function ({horaires, user, isAdmin}) {
     return (
         <>
             <Header user={user} isAdmin={isAdmin} />
-            <Main className={'mainContainer d-flex flex-column align-items-center'}>
-                {loading
-                    ? (<LoadingFetch className={'text-white'} message={'Chargement du menu ...  '}  />)
-                    : (
-                        <>
-                            <H2 className={'vibes d-table mb-5 mx-2 pt-1 text-white mt-5'}>Menus</H2>
+            <Main className={'mainContainer '}>
+                <div className={'container-sm d-flex flex-column align-items-center'}>
+                    {loading
+                        ? (<LoadingFetch className={'text-white'} message={'Chargement du menu ...  '}  />)
+                        : (
+                            <>
+                                <H2 className={'vibes d-table mb-5 mx-2 pt-1 text-white mt-5 text-decoration-underline'}>Menus</H2>
 
-                            {menus.map(menu => {
-                                return (
-                                    <React.Fragment key={menu.id}>
-                                        <Title className={'text-white vibes'}>{menu.title}</Title>
-                                        <div className={'w-100 px-4'} >
-                                            {menu.formulas.map(formula => {
-                                                return (
-                                                    <div className={'w-100 mb-4'} key={formula.id}>
-                                                        <p className={'text-white fs-3 text-decoration-underline merri'}>{formula.title}</p>
-                                                        <p className={'text-white fs-5 mukta'}>{formula.description}</p>
-                                                        <p className={'text-white fs-5 mukta'}>{formula.price} euros.</p>
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    </React.Fragment>
-                                )
-                            })}
+                                {menus.map(menu => {
+                                    return (
+                                        <React.Fragment key={menu.id}>
+                                            <Title className={'text-white vibes mb-5'}>{menu.title}</Title>
+                                            <div className={'w-100 px-4'} >
+                                                {menu.formulas.map(formula => {
+                                                    return (
+                                                        <div className={'w-100 mb-5'} key={formula.id}>
+                                                            <p className={'text-center text-white text-decoration-underline merri'}>{formula.title}</p>
+                                                            <p className={'text-center text-white mukta'}>{formula.description}</p>
+                                                            <p className={'text-center text-white mukta'}>{formula.price} euros.</p>
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </React.Fragment>
+                                    )
+                                })}
 
-                        </>
-                    )
-                }
+                            </>
+                        )
+                    }
+                </div>
 
             </Main>
             <Footer horaires={horaires} />

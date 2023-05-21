@@ -8,11 +8,13 @@ import useScrollToTop from "../Hooks/useScrollToTop";
 import useControllerRef from "../Hooks/useControllerRef";
 import useImagesHome from "../Hooks/useImagesHome";
 import {useNavigate} from "react-router-dom";
+
 export default function ({ horaires, user, isAdmin }) {
 
     const controllerRef = useControllerRef()
     const images = useImagesHome(controllerRef)
     const navigate = useNavigate()
+    const [defaultImages, setDefaultImages] = useState([])
 
     const [index, setIndex] = useState(0);
 
@@ -27,12 +29,50 @@ export default function ({ horaires, user, isAdmin }) {
         setIndex(selectedIndex);
     };
 
+    useEffect(() => {
+        if (images.length === 0) {
+            setDefaultImages(() => {
+                return [
+                    {
+                        id: 1,
+                        title: "Repas vegan",
+                        src: require('../../images/vegan-1920.jpg')
+                    },
+                    {
+                        id: 2,
+                        title: "Repas indien",
+                        src: require('../../images/vegan2-1920.jpg')
+                    }
+                ]
+            })
+        }
+    }, [images])
 
     return (
         <>
             <Header light={'1'} isAdmin={isAdmin} user={user}/>
             <Main>
                 <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
+
+                    {images.length === 0 &&
+                        defaultImages.map(e => {
+                            return (
+                                <CarouselItem key={e.id} className={'h-100'}>
+                                    <Img
+                                        className={'d-block w-100'}
+                                        src={e.src}
+                                        alt={e.title}
+                                        title={e.title}
+                                    />
+                                    <Carousel.Caption >
+                                        <h3>{e.title}</h3>
+                                    </Carousel.Caption>
+                                </CarouselItem>
+                            )
+                        })
+                    }
+
+
                     {images.map(e => {
                         return (
                             <CarouselItem key={e.id} className={'h-100'}>
@@ -40,6 +80,7 @@ export default function ({ horaires, user, isAdmin }) {
                                     className={'d-block w-100'}
                                     src={'/uploads/images/' + e.name}
                                     alt={e.title}
+                                    title={e.title}
                                 />
                                 <Carousel.Caption >
                                     <h3>{e.title}</h3>
@@ -47,6 +88,8 @@ export default function ({ horaires, user, isAdmin }) {
                             </CarouselItem>
                         )
                     })}
+
+
                 </CarouselStyled>
                 <div className={'d-flex justify-content-center bg-black py-2'}>
                     <ButtonContainer>

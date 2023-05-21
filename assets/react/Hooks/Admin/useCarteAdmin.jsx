@@ -22,7 +22,6 @@ export default function (carte, repository, setCarte, categories) {
         const data = {
             name: catRef.current.value
         }
-        console.log(data)
 
         repository.createCategory(data)
             .then((res) => {

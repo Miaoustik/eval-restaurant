@@ -11,9 +11,9 @@ export default function ({ horaires }) {
     }
     return (
         <Footer className={'w-100 text-primary pb-5'}>
-            <Container>
+
                 <p className={'d-table mx-auto py-2'}><span>&copy;</span> <span className={'merri'}>Copyright 2023</span></p>
-                <div className={'d-flex flex-column w-100'}> {/*mobile flex-column desktop flex-row */}
+                <Div className={'d-flex w-100'}> {/*mobile flex-column desktop flex-row */}
                     <Half>
                         <p className={'merri text-secondary text-decoration-underline'}>Nos horaires d'ouverture : </p>
                         <ul className={'list-unstyled ps-4'}>
@@ -48,11 +48,11 @@ export default function ({ horaires }) {
                     </Half>
                     <div>
                         <p className={'merri text-secondary text-decoration-underline'}>Réserver une table: </p>
-                        <Button onClick={handleReserve} className={'merri btn btn-outline-primary w-100 text-primary mb-5'}>Réserver</Button>
+                        <Button onClick={handleReserve} className={'merri btn btn-outline-primary w-100 text-primary mb-5 shadow1'}>Réserver</Button>
                         <a href={'#'} className={'merri text-secondary hoverPrimary'}>Mentions Légales</a>
                     </div>
-                </div>
-            </Container>
+                </Div>
+
         </Footer>
     )
 }
@@ -61,7 +61,7 @@ const Footer = styled.footer`
     background-color: #FEF1E6;
 `
 const Half = styled.div`
-    width: 100%;
+   
 `
 
 const Button = styled.button`
@@ -76,4 +76,14 @@ const Button = styled.button`
 
 const P = styled.p`
     width: 6rem;
+`
+
+const Div = styled.div`
+    flex-direction: column;
+    padding: 0 1rem 0 1rem;
+    
+    @media screen and (min-width: 700px) {
+        flex-direction: row;
+        justify-content: space-evenly;
+    }
 `

@@ -16,7 +16,7 @@ export default function ({ light = '0', user, isAdmin }) {
                 <StyledOffCanvas light={light} scroll={true} show={show} onHide={handleShow} className={"d-flex justify-content-center"}>
                     <OffcanvasHeader className={'mx-auto'} >
                         <StyledOffcanvasTitle light={light}>
-                            Navigation
+                            <span className={'vibes fs-2'}>Navigation</span>
                         </StyledOffcanvasTitle>
                     </OffcanvasHeader>
                     <OffcanvasBody>
@@ -59,13 +59,18 @@ export default function ({ light = '0', user, isAdmin }) {
                 <Brand to={'/'} className={'navbar-brand mx-auto ' + (light === '1' ? 'text-white' : 'text-primary')}>Quai Antique</Brand>
                 <div>
                     <A light={light} to={'/reserver'} className={'btn fs-6 me-2' }>Réserver</A>
-                    <A light={light} to={'/login'} className={'btn  px-2 py-1  fs-5'}><i className="bi bi-person-fill"></i><Span>Se connecter</Span></A>
+                    <A light={light} to={'/login'} className={'btn px-2 py-1 fs-5 text-center'}><I className="bi bi-person-fill"></I><SpanDesktop className={"fs-6 px-2"}>Se connecter</SpanDesktop></A>
                 </div>
             </Nav>
         </header>
     )
 }
 
+const I = styled.i`
+    @media screen and (min-width: 700px) {
+        display: none;
+    }
+`
 
 const Nav = styled.nav`
     background-color: ${props => props.light === '1' ? 'rgba(0, 0, 0, 0.5)' : '#FCDBBC'};
@@ -82,6 +87,14 @@ const Brand = styled(Link)`
 
 const StyledOffCanvas = styled(Offcanvas)`
     background-color: ${props => props.light === '1' ? 'black' : '#FFFFFF'} !important;
+    
+    @media screen and (min-width: 550px) {
+        max-width: 50% !important;
+    }
+    
+    @media screen and (min-width: 800px) {
+       max-width: 30% !important;
+    }
 `
 
 const StyledOffcanvasTitle = styled(OffcanvasTitle)`
@@ -114,6 +127,15 @@ const Button = styled.button`
 
 const Span = styled.span`
     display: none;
+`
+
+const SpanDesktop = styled.span`
+    display: none;
+    
+    @media screen and (min-width: 700px) {
+        display: table;
+        padding: 0.2rem 0 0.2rem 0;
+    }
 `
 
 const OffCanvasA = styled(Link)`

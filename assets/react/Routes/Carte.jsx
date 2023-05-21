@@ -34,30 +34,32 @@ export default function ({horaires, isAdmin, user}) {
                 : (
                     <>
                         <Main className={'mainContainer px-5'}>
-                            <Div className={'my-5 border border-primary py-2 text-primary bgOrange d-flex justify-content-center shadow1'}>
-                                <H2 className={'vibes d-block mb-0 mx-2 pt-1'}>Carte du Restaurant</H2>
-                            </Div>
-                            <div className={'pb-4'}>
-                                {carte.map(el => {
-                                    return (
-                                        <Div key={el.id} className={'flex-column border border-primary py-2 text-primary bgOrange d-flex align-items-center shadow1 px-3 mt-3'}>
-                                            <div onClick={toggleShow} data-id={el.id} className={'w-100'} role={'button'}>
-                                                <p data-id={el.id} className={'merri text-primary my-3 text-decoration-underline text-center '}>{el.name}</p>
-                                            </div>
-                                            <HeightTransition className={'w-100'} show={show[el.id]}>
-                                                {el.dishes.map(dish => {
-                                                    return (
-                                                        <Div key={dish.id} className={'border border-primary w-100 p-3 mb-3 shadow1'}>
-                                                            <p className={'merri text-primary'}>{dish.title}</p>
-                                                            <p className={'mukta text-primary'}>{dish.description}</p>
-                                                            <p className={'mukta text-primary'}>{dish.price} euros</p>
-                                                        </Div>
-                                                    )
-                                                })}
-                                            </HeightTransition>
-                                        </Div>
-                                    )
-                                })}
+                            <div className={'container-sm'}>
+                                <Div className={'my-5 border border-primary py-2 text-primary bgOrange d-flex justify-content-center shadow1'}>
+                                    <H2 className={'vibes d-block mb-0 mx-2 pt-1'}>Carte du Restaurant</H2>
+                                </Div>
+                                <div className={'pb-4'}>
+                                    {carte.map(el => {
+                                        return (
+                                            <Div key={el.id} className={'flex-column border border-primary py-2 text-primary bgOrange d-flex align-items-center shadow1 px-3 mt-3'}>
+                                                <div onClick={toggleShow} data-id={el.id} className={'w-100'} role={'button'}>
+                                                    <p data-id={el.id} className={'vibes fs-2 text-primary my-3 text-center '}>{el.name}</p>
+                                                </div>
+                                                <HeightTransition className={'w-100'} show={show[el.id]}>
+                                                    {el.dishes.map(dish => {
+                                                        return (
+                                                            <DivDish key={dish.id} className={'border border-primary w-100 p-3 mb-3 shadow1'}>
+                                                                <p className={'merri text-black text-center'}>{dish.title}</p>
+                                                                <p className={'mukta text-black text-center'}>{dish.description}</p>
+                                                                <p className={'mukta text-black text-center'}>{dish.price} €</p>
+                                                            </DivDish>
+                                                        )
+                                                    })}
+                                                </HeightTransition>
+                                            </Div>
+                                        )
+                                    })}
+                                </div>
                             </div>
 
                         </Main>
@@ -81,4 +83,8 @@ const H2 = styled.h2`
 
 const Div = styled.div`
     border-radius: 1rem;
+`
+
+const DivDish = styled(Div)`
+    background-color: #CBA58E;
 `

@@ -23,11 +23,11 @@ export default function (controllerRef, horaires, repository) {
                     let morningClosed = false
                     let eveningClosed = false
 
-                    if (horaires[k].morning === null || horaires[1].morning === null) {
+                    if (horaires[k].morning === null || horaires[k].morning === null) {
                         morningClosed = true
                     }
 
-                    if (horaires[k].evening === null || horaires[1].evening === null) {
+                    if (horaires[k].evening === null || horaires[k].evening === null) {
                         eveningClosed = true
                     }
 

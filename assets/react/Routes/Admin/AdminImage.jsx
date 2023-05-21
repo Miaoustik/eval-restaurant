@@ -48,7 +48,7 @@ export default function ({isAdmin, user, horaires}) {
         <>
             <Header isAdmin={isAdmin} user={user}/>
             <main className={'mainContainer'} >
-                <Container fluid={true}>
+                <div className={'container-sm'}>
                     <h2 className={'merri mt-4 text-primary '}>Gestions des images</h2>
                     {loadingImage !== false
                         ? (<LoadingFetch message={'Chargement des images...'} />)
@@ -77,7 +77,7 @@ export default function ({isAdmin, user, horaires}) {
                             </>
                         )
                     }
-                </Container>
+                </div>
             </main>
             <Footer horaires={horaires} />
         </>

@@ -47,7 +47,7 @@ export default function ({ horaires, login, user, logout, error, loadingLogin, l
         <>
             <Header user={user} isAdmin={isAdmin} />
             <Main className={'mainContainer d-flex align-items-center min-h-100'}>
-                <Container>
+                <div className={'container-sm'}>
                     <FormDiv>
                         {user !== null
                             ? (
@@ -97,7 +97,7 @@ export default function ({ horaires, login, user, logout, error, loadingLogin, l
                         }
 
                     </FormDiv>
-                </Container>
+                </div>
             </Main>
             <Footer horaires={horaires} />
         </>

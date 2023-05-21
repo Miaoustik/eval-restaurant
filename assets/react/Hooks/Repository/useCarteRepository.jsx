@@ -11,10 +11,6 @@ export default function (controllerRef) {
 
     const get = () => {
         return http.get('/api/carte')
-            .then(res => {
-                console.log(res)
-                return res
-            })
             .then(res => handleResponse(res, setCarte, setError))
     }
 
