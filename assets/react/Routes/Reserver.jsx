@@ -68,13 +68,13 @@ export default function ({horaires, user, isAdmin, userRepository}) {
                     const news = []
                     const cloneStart = new Date(start.getTime())
                     const cloneEnd = new Date(end.getTime())
-                    cloneEnd.setUTCHours(cloneEnd.getUTCHours() - 1)
+                    cloneEnd.setHours(cloneEnd.getHours() - 1)
 
                     while (cloneStart <= cloneEnd) {
                         if ((new Date() < cloneStart) ) {
-                            news.push(cloneStart.getUTCHours() + ':' + (cloneStart.getUTCMinutes() < 10 ? ('0' + cloneStart.getUTCMinutes()) : cloneStart.getUTCMinutes()))
+                            news.push(cloneStart.getHours() + ':' + (cloneStart.getMinutes() < 10 ? ('0' + cloneStart.getMinutes()) : cloneStart.getMinutes()))
                         }
-                        cloneStart.setUTCMinutes(cloneStart.getUTCMinutes() + 15)
+                        cloneStart.setMinutes(cloneStart.getMinutes() + 15)
                     }
 
                     return news

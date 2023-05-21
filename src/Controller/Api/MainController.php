@@ -122,7 +122,7 @@ class MainController extends AbstractController
     public function reserver (Request $request, RotationRepository $rotationRepository, MaxCustomerRepository $maxCustomerRepository, EntityManagerInterface $manager): Response
     {
         $data = json_decode($request->getContent());
-        $date = new DateTime($data->dateInput, new \DateTimeZone('UTC'));
+        $date = new DateTime($data->dateInput, new \DateTimeZone('Europe/Paris'));
 
 
 

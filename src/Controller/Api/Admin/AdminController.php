@@ -26,7 +26,7 @@ class AdminController extends AbstractController
     {
         $data = json_decode($request->getContent());
 
-        $date = new \DateTime($data->date, new \DateTimeZone('UTC'));
+        $date = new \DateTime($data->date, new \DateTimeZone('Europe/Paris'));
 
         /** @var Rotation|null $rotation */
         $rotation = $repository->findOneByDateEager($date);
