@@ -44,7 +44,7 @@ export default function ({horaires, user, isAdmin}) {
                             morning += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getHours() + 'h' + date.getMinutes()
+                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
                             }
                         })
 
@@ -52,7 +52,7 @@ export default function ({horaires, user, isAdmin}) {
                             evening += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getHours() + 'h' + date.getMinutes()
+                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
                             }
                         })
                         setMaxMorning(morning)
@@ -73,10 +73,6 @@ export default function ({horaires, user, isAdmin}) {
         }
 
         http.post('/api/admin/update-max', data)
-            .then(res => {
-                console.log(res.data)
-            })
-
     }
 
     return (
