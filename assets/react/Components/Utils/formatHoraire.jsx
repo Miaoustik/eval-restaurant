@@ -19,13 +19,13 @@ export function toDate (horaire, date = null)  {
         date = new Date()
     }
     const splitHoraire = horaire.split(':')
-    date.setHours(parseInt(splitHoraire[0], 10))
-    date.setMinutes(parseInt(splitHoraire[1], 10))
+    date.setUTCHours(parseInt(splitHoraire[0], 10))
+    date.setUTCMinutes(parseInt(splitHoraire[1], 10))
     if (splitHoraire[2]) {
-        date.setSeconds(parseInt(splitHoraire[2], 10))
+        date.setUTCSeconds(parseInt(splitHoraire[2], 10))
     }
     if (splitHoraire[3]) {
-        date.setMilliseconds(parseInt(splitHoraire[3], 10))
+        date.setUTCMilliseconds(parseInt(splitHoraire[3], 10))
     }
     return date
 }
