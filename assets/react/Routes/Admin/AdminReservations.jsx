@@ -44,7 +44,7 @@ export default function ({horaires, user, isAdmin}) {
                             morning += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getHours() + 'h' + date.getMinutes()
+                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
                             }
                         })
 
@@ -52,7 +52,7 @@ export default function ({horaires, user, isAdmin}) {
                             evening += el.customerNumber
                             if (el.hour !== null) {
                                 const date = new Date(el.hour)
-                                el.hour = date.getHours() + 'h' + date.getMinutes()
+                                el.hour = date.getUTCHours() + 'h' + date.getUTCMinutes()
                             }
                         })
                         setMaxMorning(morning)
@@ -124,7 +124,6 @@ export default function ({horaires, user, isAdmin}) {
                                     <p className={'text-secondary merri mt- 4'}>Réservations du soir : {maxEvening} clients</p>
 
                                     {data.evening.map(el => {
-                                        console.log(typeof el.hour)
                                         return (
                                             <div className={'border border-primary rounded my-4 p-3 shadow1'} key={el.id}>
                                                 <p>Heure de la réservation : {el.hour}</p>

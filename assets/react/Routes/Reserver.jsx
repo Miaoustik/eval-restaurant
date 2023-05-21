@@ -69,13 +69,13 @@ export default function ({horaires, user, isAdmin, userRepository}) {
                     const news = []
                     const cloneStart = new Date(start.getTime())
                     const cloneEnd = new Date(end.getTime())
-                    cloneEnd.setHours(cloneEnd.getHours() - 1)
+                    cloneEnd.setUTCHours(cloneEnd.getUTCHours() - 1)
 
                     while (cloneStart <= cloneEnd) {
                         if ((new Date() < cloneStart) ) {
-                            news.push(cloneStart.getHours() + ':' + (cloneStart.getMinutes() < 10 ? ('0' + cloneStart.getMinutes()) : cloneStart.getMinutes()))
+                            news.push(cloneStart.getUTCHours() + ':' + (cloneStart.getUTCMinutes() < 10 ? ('0' + cloneStart.getUTCMinutes()) : cloneStart.getUTCMinutes()))
                         }
-                        cloneStart.setMinutes(cloneStart.getMinutes() + 15)
+                        cloneStart.setUTCMinutes(cloneStart.getUTCMinutes() + 15)
                     }
 
                     return news
@@ -108,13 +108,13 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             setMorning([])
             setEvening([])
             const date = new Date(dateInput)
-            date.setHours(0)
+            date.setUTCHours(0)
 
             const newDate = new Date()
-            newDate.setHours(0)
-            newDate.setMinutes(0)
-            newDate.setSeconds(0)
-            newDate.setMilliseconds(0)
+            newDate.setUTCHours(0)
+            newDate.setUTCMinutes(0)
+            newDate.setUTCSeconds(0)
+            newDate.setUTCMilliseconds(0)
 
             if (date < newDate) {
                 setErrorDate("Date antérieur à aujourd'hui")
@@ -122,7 +122,7 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             } else {
                 const data = {
                     date: dateInput,
-                    hour: new Date().toLocaleTimeString('fr-FR', {timeZone: 'Europe/paris'})
+                    hour: new Date().toString()
                 }
 
                 repository.get(data)

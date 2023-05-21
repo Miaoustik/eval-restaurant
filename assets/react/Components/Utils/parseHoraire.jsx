@@ -9,7 +9,7 @@ export default function (data) {
     function buildHoraire (start = null, end = null) {
 
         function getHoursMins(date) {
-            return date.getUTCHours() + 'h' + (date.getUTCMinutes() < 10 ? '0' + date.getUTCMinutes() : date.getUTCMinutes())
+            return date.getHours() + 'h' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
         }
 
         if (start !== null && end !== null) {
