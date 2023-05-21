@@ -107,13 +107,13 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             setMorning([])
             setEvening([])
             const date = new Date(dateInput)
-            date.setUTCHours(0)
+            date.setHours(0)
 
             const newDate = new Date()
-            newDate.setUTCHours(0)
-            newDate.setUTCMinutes(0)
-            newDate.setUTCSeconds(0)
-            newDate.setUTCMilliseconds(0)
+            newDate.setHours(0)
+            newDate.setMinutes(0)
+            newDate.setSeconds(0)
+            newDate.setMilliseconds(0)
 
             if (date < newDate) {
                 setErrorDate("Date antérieur à aujourd'hui")
@@ -121,7 +121,7 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             } else {
                 const data = {
                     date: dateInput,
-                    hour: new Date().toUTCString()
+                    hour: new Date().toString()
                 }
 
 
