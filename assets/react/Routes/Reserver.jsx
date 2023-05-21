@@ -171,8 +171,6 @@ export default function ({horaires, user, isAdmin, userRepository}) {
             morning: morning.includes(choice),
         }
 
-        console.log(obj)
-
         repository.reserver(obj)
             .then((res) => {
                 if (res.ok) {

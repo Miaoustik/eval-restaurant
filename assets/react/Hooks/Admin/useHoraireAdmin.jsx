@@ -212,9 +212,6 @@ export default function (controllerRef, horaires, repository) {
             }
         })
 
-        console.log('data', data)
-        console.log('newHoraire', newHoraire)
-
         repository.modify(data)
             .then(() => setSubmittedOk(true))
             .then(() => repository.getAllParsed())

@@ -14,11 +14,6 @@ export default function (controllerRef) {
 
     const getAllParsed = () => {
         return http.get('/api/horaire')
-            .then(res => {
-                console.log('before parse', res)
-                console.log('after parse', parseHoraire(res.data))
-                return res
-            })
             .then(res => handleResponse(res, newSetHoraires))
 
     }
@@ -47,10 +42,6 @@ export default function (controllerRef) {
 
     const modify = (data) => {
         return http.post('/api/admin/horaire/modify', data)
-            .then(res => {
-                console.log(res)
-                return res
-            })
             .then(res => handleResponse(res, newSetHoraires))
     }
 
