@@ -1,5 +1,5 @@
 import React from "react";
-import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {createBrowserRouter, Navigate, RouterProvider} from "react-router-dom";
 import Home from "./Routes/Home";
 import useHorairesFooter from "./Hooks/useHorairesFooter";
 import Login from "./Routes/Login";
@@ -95,44 +95,44 @@ export default function Router () {
         },
         {
             path: '/admin/image',
-            element: <AdminImage
+            element: isAdmin === true ? <AdminImage
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
-            />
+            /> : <Navigate to={'/login'} />
         },
         {
             path: '/admin/carte',
-            element: <AdminCarte
+            element: isAdmin === true ? <AdminCarte
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
-            />
+            /> : <Navigate to={'/login'} />
         },
         {
             path: '/admin/horaire',
-            element: <AdminHoraire
+            element: isAdmin === true ? <AdminHoraire
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
                 repository={repository}
-            />
+            /> : <Navigate to={'/login'} />
         },
         {
             path: '/admin/menu',
-            element: <AdminMenu
+            element: isAdmin === true ?  <AdminMenu
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
-            />
+            /> : <Navigate to={'/login'} />
         },
         {
             path: '/admin/reservation',
-            element: <AdminReservations
+            element: isAdmin === true ?  <AdminReservations
                 user={user}
                 isAdmin={isAdmin}
                 horaires={horaires}
-            />
+            /> : <Navigate to={'/login'} />
         }
     ])
 
