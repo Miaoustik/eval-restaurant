@@ -17,6 +17,7 @@ class IndexController extends AbstractController
     #[Route(path: '/menus', methods: ['GET'])]
     #[Route(path: '/inscription', methods: ['GET'])]
     #[Route(path: '/login', methods: ['GET'])]
+    #[Route(path: '/mentions', methods: ['GET'])]
     #[Route(path: '/admin/horaire', methods: ['GET'])]
     #[Route(path: '/admin/menu', methods: ['GET'])]
     #[Route(path: '/admin/reservation', methods: ['GET'])]

@@ -14,6 +14,7 @@ import AdminCarte from "./Routes/Admin/AdminCarte";
 import AdminHoraire from "./Routes/Admin/AdminHoraire";
 import AdminMenu from "./Routes/Admin/AdminMenu";
 import AdminReservations from "./Routes/Admin/AdminReservations";
+import Mentions from "./Routes/Mentions";
 
 export default function Router () {
 
@@ -133,6 +134,14 @@ export default function Router () {
                 isAdmin={isAdmin}
                 horaires={horaires}
             /> : <Navigate to={'/login'} />
+        },
+        {
+            path: '/mentions',
+            element: <Mentions
+                horaires={horaires}
+                user={user}
+                isAdmin={isAdmin}
+            />
         }
     ])
 

@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import Header from "../Components/Header";
 import Footer from "../Components/Footer";
-import reserver from "../../images/reserver-1920.jpg"
+import reserver from "../../images/table-1920.jpg"
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
 import useControllerRef from "../Hooks/useControllerRef";

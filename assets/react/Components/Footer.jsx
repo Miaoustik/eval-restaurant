@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {Container} from "react-bootstrap";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
 export default function ({ horaires }) {
     const navigate = useNavigate()
@@ -49,7 +49,7 @@ export default function ({ horaires }) {
                     <div>
                         <p className={'merri text-secondary text-decoration-underline'}>Réserver une table: </p>
                         <Button onClick={handleReserve} className={'merri btn btn-outline-primary w-100 text-primary mb-5 shadow1'}>Réserver</Button>
-                        <a href={'#'} className={'merri text-secondary hoverPrimary'}>Mentions Légales</a>
+                        <Link to={'/mentions'} className={'merri text-secondary hoverPrimary'}>Mentions Légales</Link>
                     </div>
                 </Div>
 
