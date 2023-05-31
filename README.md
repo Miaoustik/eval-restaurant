@@ -1,9 +1,11 @@
 # Readme
 **Référence : BDATPDIRECCTEECF-Ete2023_296117_20230301171951**
 
+**Wattebled Cédric**
+
 Adresse en ligne: https://quai-antique-deluxe.herokuapp.com/
 
-## Deploiement en local: 
+## Deploiement en local:
 
 ### Prérequis:
 - php 8.1 avec les extensions (ainsi que l'extension pdo correspondant à votre SGBDR.)
@@ -11,8 +13,8 @@ Adresse en ligne: https://quai-antique-deluxe.herokuapp.com/
 - composer
 - Node.js
 - symfony cli  https://symfony.com/download
-    
-### Instructions: 
+
+### Instructions:
 - cloner le projet de github
 ```bash
 git clone https://github.com/Miaoustik/eval-restaurant
@@ -56,14 +58,14 @@ npm run dev-server
 symfony console app:add-admin
 ```
 
-## Deploiement en ligne: 
+## Deploiement en ligne:
 
-### prérequis : 
+### prérequis :
 - un compte heroku avec dyno eco plan minimum et un addon postgres pour la base de données.
 - avoir git.
 - installer heroku CLI sur votre machine
 
-### installation: 
+### installation:
 - cloner le projet.
 ```bash
 git clone https://github.com/Miaoustik/eval-restaurant
@@ -72,7 +74,7 @@ git clone https://github.com/Miaoustik/eval-restaurant
 ```bash
 cd project_dir
 ```
-- faire un heroku login pour vous connecter à votre compte. 
+- faire un heroku login pour vous connecter à votre compte.
 ```bash
 heroku login
 ```
