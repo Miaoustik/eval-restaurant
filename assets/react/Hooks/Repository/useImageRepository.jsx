@@ -17,6 +17,7 @@ export default function (controllerRef) {
     const save = (data) => {
         return http.post('/api/admin/images/save', data, null, true)
             .then(res => {
+                console.log(res)
                 handleResponse(res, setImages)
                 return res
             })

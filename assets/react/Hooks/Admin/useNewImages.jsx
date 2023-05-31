@@ -124,6 +124,7 @@ export default function (images, loadingImage, repository, setInputLoaded) {
         setInputLoaded(false)
         repository.save(data)
             .then((res) => {
+                console.log(res)
                 if (res.ok) {
                     setSubmitted(true)
                 }

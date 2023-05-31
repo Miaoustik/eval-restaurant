@@ -8,9 +8,14 @@ export default function (controllerRef) {
         repository
     } = useImageRepository(controllerRef)
 
+    const [loaded, setLoaded] = useState(false)
+
     useEffect(() => {
         repository.getAll()
+            .finally(() => {
+                setLoaded(true)
+            })
     }, [])
 
-    return images
+    return [images, loaded]
 }

@@ -8,11 +8,13 @@ import useScrollToTop from "../Hooks/useScrollToTop";
 import useControllerRef from "../Hooks/useControllerRef";
 import useImagesHome from "../Hooks/useImagesHome";
 import {useNavigate} from "react-router-dom";
+import LoadingFetch from "../Components/Ui/LoadingFetch";
 
 export default function ({ horaires, user, isAdmin }) {
 
     const controllerRef = useControllerRef()
-    const images = useImagesHome(controllerRef)
+    const [loadingImage, setLoadingImage] = useState(true)
+    const [images, loaded] = useImagesHome(controllerRef)
     const navigate = useNavigate()
     const [defaultImages, setDefaultImages] = useState([])
 
@@ -30,73 +32,98 @@ export default function ({ horaires, user, isAdmin }) {
     };
 
     useEffect(() => {
-        if (images.length === 0) {
-            setDefaultImages(() => {
-                return [
-                    {
-                        id: 1,
-                        title: "Repas vegan",
-                        src: require('../../images/vegan-1920.jpg')
-                    },
-                    {
-                        id: 2,
-                        title: "Repas indien",
-                        src: require('../../images/vegan2-1920.jpg')
-                    }
-                ]
-            })
+        if (loaded === true) {
+            if (images.length === 0) {
+                const image1 = new Image()
+                image1.src = require('../../images/vegan-1920.jpg')
+
+                const image2 = new Image()
+                image2.src = require('../../images/vegan2-1920.jpg')
+
+                setDefaultImages(() => {
+                    return [
+                        {
+                            id: 1,
+                            title: "Repas vegan",
+                            src: require('../../images/vegan-1920.jpg')
+                        },
+                        {
+                            id: 2,
+                            title: "Repas indien",
+                            src: require('../../images/vegan2-1920.jpg')
+                        }
+                    ]
+                })
+            } else {
+                images.forEach(image => {
+                    const image1 = new Image()
+                    image1.src = '/uploads/images/' + image.name
+                })
+            }
+            setLoadingImage(false)
         }
+
     }, [images])
 
     return (
         <>
             <Header light={'1'} isAdmin={isAdmin} user={user}/>
             <Main>
-                <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
+                {loadingImage
+                    ? (
+                        <LoadingFetch message={'Chargement des images ...'} className={'w-100 h-100'} />
+                    )
+                    : (
+                        <>
+                            <CarouselStyled activeIndex={index} onSelect={handleSelect} interval={null}>
 
-                    {images.length === 0 &&
-                        defaultImages.map(e => {
-                            return (
-                                <CarouselItem key={e.id} className={'h-100'}>
-                                    <Img
-                                        className={'d-block w-100'}
-                                        src={e.src}
-                                        alt={e.title}
-                                        title={e.title}
-                                    />
-                                    <Carousel.Caption >
-                                        <h3>{e.title}</h3>
-                                    </Carousel.Caption>
-                                </CarouselItem>
-                            )
-                        })
-                    }
-
-
-                    {images.map(e => {
-                        return (
-                            <CarouselItem key={e.id} className={'h-100'}>
-                                <Img
-                                    className={'d-block w-100'}
-                                    src={'/uploads/images/' + e.name}
-                                    alt={e.title}
-                                    title={e.title}
-                                />
-                                <Carousel.Caption >
-                                    <h3>{e.title}</h3>
-                                </Carousel.Caption>
-                            </CarouselItem>
-                        )
-                    })}
+                                {images.length === 0 &&
+                                    defaultImages.map(e => {
+                                        return (
+                                            <CarouselItem key={e.id} className={'h-100'}>
+                                                <Img
+                                                    className={'d-block w-100'}
+                                                    src={e.src}
+                                                    alt={e.title}
+                                                    title={e.title}
+                                                />
+                                                <Carousel.Caption >
+                                                    <h3>{e.title}</h3>
+                                                </Carousel.Caption>
+                                            </CarouselItem>
+                                        )
+                                    })
+                                }
 
 
-                </CarouselStyled>
-                <div className={'d-flex justify-content-center bg-black py-2'}>
-                    <ButtonContainer>
-                        <Mask>Réserver</Mask>
-                        <ReserveBtn onClick={handleReserve} url={nature} className={'text-white'} >Réserver</ReserveBtn>
-                    </ButtonContainer>
-                </div>
+                                {images.map(e => {
+                                    return (
+                                        <CarouselItem key={e.id} className={'h-100'}>
+                                            <Img
+                                                className={'d-block w-100'}
+                                                src={'/uploads/images/' + e.name}
+                                                alt={e.title}
+                                                title={e.title}
+                                            />
+                                            <Carousel.Caption >
+                                                <h3>{e.title}</h3>
+                                            </Carousel.Caption>
+                                        </CarouselItem>
+                                    )
+                                })}
+
+
+                            </CarouselStyled>
+                            <div className={'d-flex justify-content-center bg-black py-2'}>
+                                <ButtonContainer>
+                                    <Mask>Réserver</Mask>
+                                    <ReserveBtn onClick={handleReserve} url={nature} className={'text-white'} >Réserver</ReserveBtn>
+                                </ButtonContainer>
+                            </div>
+                        </>
+                    )
+                }
+
             </Main>
             <Footer horaires={horaires}/>
         </>

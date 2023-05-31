@@ -14,9 +14,13 @@ export default function ({horaires, user, isAdmin}) {
     const {menus, repository, setMenus} = useMenuRepository(controllerRef)
     const [loading, setLoading] = useState(true)
     const scrollToTop = useScrollToTop()
+    const [loadingImage, setLoadingImage] = useState(true)
 
     useEffect(() => {
         scrollToTop(s => !s)
+        const image = new Image()
+        image.src = black
+        setLoadingImage(false)
         repository.get()
             .then(res => {
                 if (res.ok) {
@@ -30,39 +34,50 @@ export default function ({horaires, user, isAdmin}) {
     return (
         <>
             <Header user={user} isAdmin={isAdmin} />
-            <Main className={'mainContainer '}>
-                <div className={'container-sm d-flex flex-column align-items-center'}>
-                    {loading
-                        ? (<LoadingFetch className={'text-white'} message={'Chargement du menu ...  '}  />)
-                        : (
-                            <>
-                                <H2 className={'vibes d-table mb-5 mx-2 pt-1 text-white mt-5 text-decoration-underline'}>Menus</H2>
 
-                                {menus.map(menu => {
-                                    return (
-                                        <React.Fragment key={menu.id}>
-                                            <Title className={'text-white vibes mb-5'}>{menu.title}</Title>
-                                            <div className={'w-100 px-4'} >
-                                                {menu.formulas.map(formula => {
-                                                    return (
-                                                        <div className={'w-100 mb-5'} key={formula.id}>
-                                                            <p className={'text-center text-white text-decoration-underline merri'}>{formula.title}</p>
-                                                            <p className={'text-center text-white mukta'}>{formula.description}</p>
-                                                            <p className={'text-center text-white mukta'}>{formula.price} euros.</p>
+            {loadingImage
+                ? (<LoadingFetch message={'Chargement ...'} className={'w-100 h-100'} /> )
+                : (
+                    <>
+                        <Main className={'mainContainer '}>
+
+                            <div className={'container-sm d-flex flex-column align-items-center'}>
+                                {loading
+                                    ? (<LoadingFetch className={'text-white'} message={'Chargement du menu ...  '}  />)
+                                    : (
+                                        <>
+                                            <H2 className={'vibes d-table mb-5 mx-2 pt-1 text-white mt-5 text-decoration-underline'}>Menus</H2>
+
+                                            {menus.map(menu => {
+                                                return (
+                                                    <React.Fragment key={menu.id}>
+                                                        <Title className={'text-white vibes mb-5'}>{menu.title}</Title>
+                                                        <div className={'w-100 px-4'} >
+                                                            {menu.formulas.map(formula => {
+                                                                return (
+                                                                    <div className={'w-100 mb-5'} key={formula.id}>
+                                                                        <p className={'text-center text-white text-decoration-underline merri'}>{formula.title}</p>
+                                                                        <p className={'text-center text-white mukta'}>{formula.description}</p>
+                                                                        <p className={'text-center text-white mukta'}>{formula.price} euros.</p>
+                                                                    </div>
+                                                                )
+                                                            })}
                                                         </div>
-                                                    )
-                                                })}
-                                            </div>
-                                        </React.Fragment>
+                                                    </React.Fragment>
+                                                )
+                                            })}
+
+                                        </>
                                     )
-                                })}
+                                }
+                            </div>
 
-                            </>
-                        )
-                    }
-                </div>
+                        </Main>
+                    </>
+                )
+            }
 
-            </Main>
+
             <Footer horaires={horaires} />
         </>
     )

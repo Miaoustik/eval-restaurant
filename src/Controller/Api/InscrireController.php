@@ -25,7 +25,7 @@ class InscrireController extends AbstractController
             ->setRoles(['ROLE_USER'])
             ->setAllergens( strlen($data->allergen) > 0 ? $data->allergen : null)
             ->setNumber($data->convive);
-        $user->setPassword($hasher->hashPassword($user, 'test'));
+        $user->setPassword($hasher->hashPassword($user, $data->password));
 
         try {
             $manager->persist($user);

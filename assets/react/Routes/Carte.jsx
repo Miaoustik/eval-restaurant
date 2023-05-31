@@ -15,9 +15,15 @@ export default function ({horaires, isAdmin, user}) {
     const {carte, repository} = useCarteRepository(controllerRef)
     const [loading, setLoading] = useState(true)
     const {show, toggleShow} = useHeightTransition()
+    const [loadingImage, setLoadingImage] = useState(true)
 
     useEffect(() => {
         repository.get()
+            .then(() => {
+                const image = new Image()
+                image.src = entree
+                setLoadingImage(false)
+            })
             .finally(() => setLoading(false))
     }, [])
 
@@ -25,47 +31,55 @@ export default function ({horaires, isAdmin, user}) {
     return (
         <>
             <Header user={user} isAdmin={isAdmin}/>
-            {loading
-                ? (
-                    <Main className={'mainContainer px-5 d-flex align-items-center'}>
-                        <LoadingFetch className={'text-white'} message={'Chargement de la carte...'} />
-                    </Main>
-                )
+            {loadingImage
+                ? (<LoadingFetch message={'Chargement ...'} className={'w-100 h-100'} />)
                 : (
                     <>
-                        <Main className={'mainContainer px-5'}>
-                            <div className={'container-sm'}>
-                                <Div className={'my-5 border border-primary py-2 text-primary bgOrange d-flex justify-content-center shadow1'}>
-                                    <H2 className={'vibes d-block mb-0 mx-2 pt-1'}>Carte du Restaurant</H2>
-                                </Div>
-                                <div className={'pb-4'}>
-                                    {carte.map(el => {
-                                        return (
-                                            <Div key={el.id} className={'flex-column border border-primary py-2 text-primary bgOrange d-flex align-items-center shadow1 px-3 mt-3'}>
-                                                <div onClick={toggleShow} data-id={el.id} className={'w-100'} role={'button'}>
-                                                    <p data-id={el.id} className={'vibes fs-2 text-primary my-3 text-center '}>{el.name}</p>
-                                                </div>
-                                                <HeightTransition className={'w-100'} show={show[el.id]}>
-                                                    {el.dishes.map(dish => {
-                                                        return (
-                                                            <DivDish key={dish.id} className={'border border-primary w-100 p-3 mb-3 shadow1'}>
-                                                                <p className={'merri text-black text-center'}>{dish.title}</p>
-                                                                <p className={'mukta text-black text-center'}>{dish.description}</p>
-                                                                <p className={'mukta text-black text-center'}>{dish.price} €</p>
-                                                            </DivDish>
-                                                        )
-                                                    })}
-                                                </HeightTransition>
+                        {loading
+                            ? (
+                                <Main className={'mainContainer px-5 d-flex align-items-center'}>
+                                    <LoadingFetch className={'text-white'} message={'Chargement de la carte...'} />
+                                </Main>
+                            )
+                            : (
+                                <>
+                                    <Main className={'mainContainer px-5'}>
+                                        <div className={'container-sm'}>
+                                            <Div className={'my-5 border border-primary py-2 text-primary bgOrange d-flex justify-content-center shadow1'}>
+                                                <H2 className={'vibes d-block mb-0 mx-2 pt-1'}>Carte du Restaurant</H2>
                                             </Div>
-                                        )
-                                    })}
-                                </div>
-                            </div>
+                                            <div className={'pb-4'}>
+                                                {carte.map(el => {
+                                                    return (
+                                                        <Div key={el.id} className={'flex-column border border-primary py-2 text-primary bgOrange d-flex align-items-center shadow1 px-3 mt-3'}>
+                                                            <div onClick={toggleShow} data-id={el.id} className={'w-100'} role={'button'}>
+                                                                <p data-id={el.id} className={'vibes fs-2 text-primary my-3 text-center '}>{el.name}</p>
+                                                            </div>
+                                                            <HeightTransition className={'w-100'} show={show[el.id]}>
+                                                                {el.dishes.map(dish => {
+                                                                    return (
+                                                                        <DivDish key={dish.id} className={'border border-primary w-100 p-3 mb-3 shadow1'}>
+                                                                            <p className={'merri text-black text-center'}>{dish.title}</p>
+                                                                            <p className={'mukta text-black text-center'}>{dish.description}</p>
+                                                                            <p className={'mukta text-black text-center'}>{dish.price} €</p>
+                                                                        </DivDish>
+                                                                    )
+                                                                })}
+                                                            </HeightTransition>
+                                                        </Div>
+                                                    )
+                                                })}
+                                            </div>
+                                        </div>
 
-                        </Main>
+                                    </Main>
+                                </>
+                            )
+                        }
                     </>
                 )
             }
+
 
             <Footer horaires={horaires} />
         </>

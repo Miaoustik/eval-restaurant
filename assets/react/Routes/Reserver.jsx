@@ -35,6 +35,7 @@ export default function ({horaires, user, isAdmin, userRepository}) {
     const [loadingSubmit, setLoadingSubmit] = useState(false)
     const [errorSubmit, setErrorSubmit] = useState(null)
     const [userDefault, setUserDefault] = useState(null)
+    const [loadingImage, setLoadingImage] = useState(true)
 
     const {show: showMorning, toggleShow: toggleShowMorning, setShow: setShowMorning} = useHeightTransition()
     const {show: showEvening, toggleShow: toggleShowEvening, setShow: setShowEvening} = useHeightTransition()
@@ -49,6 +50,9 @@ export default function ({horaires, user, isAdmin, userRepository}) {
                     setUserDefault(res.data)
                 })
         }
+        const image = new Image()
+        image.src = reserver
+        setLoadingImage(false)
         maxRepository.get()
             .finally(() => setLoadingMax(false))
     }, [])
@@ -197,123 +201,131 @@ export default function ({horaires, user, isAdmin, userRepository}) {
     return (
         <>
             <Header user={user} isAdmin={isAdmin} />
-            <Main className={'mainContainer d-flex align-items-center min-h-100'}>
-                <Container>
-                    <FormDiv>
-                        <h2 className={'text-center merri text-primary mb-4'}>Reservation</h2>
-                        {loadingMax || loadingSubmit
-                            ? (<LoadingFetch message={'Chargement ...'} />)
-                            : (
-                                <>
-                                    <form onSubmit={handleSubmit}>
-                                        {submitted &&
-                                            <div className={'alert alert-success mukta'}>
-                                                Votre réservation a bien été prise en compte.
-                                            </div>
-                                        }
-                                        {errorSubmit &&
-                                            <div className={'alert alert-danger mukta'}>
-                                                {errorSubmit}
-                                            </div>
-                                        }
-                                        <div>
-                                            <label className={'merri text-primary mb-2'}>Date de la réservation : </label>
-                                            <input  value={dateInput} onChange={handleDateInput} className={'form-control border border-primary shadow1'} type={'date'} required/>
-                                        </div>
-                                        {loadingRotation
-                                            ? (
-                                                <LoadingFetch message={'Chargement...'} />
-                                            )
-                                            : (
-                                                <>
-
-                                                    {errorDate
+            {loadingImage
+                ? (<LoadingFetch message={'chargement...'} className={'w-100 h-100'} /> )
+                : (
+                    <>
+                        <Main className={'mainContainer d-flex align-items-center min-h-100'}>
+                            <Container>
+                                <FormDiv>
+                                    <h2 className={'text-center merri text-primary mb-4'}>Reservation</h2>
+                                    {loadingMax || loadingSubmit
+                                        ? (<LoadingFetch message={'Chargement ...'} />)
+                                        : (
+                                            <>
+                                                <form onSubmit={handleSubmit}>
+                                                    {submitted &&
+                                                        <div className={'alert alert-success mukta'}>
+                                                            Votre réservation a bien été prise en compte.
+                                                        </div>
+                                                    }
+                                                    {errorSubmit &&
+                                                        <div className={'alert alert-danger mukta'}>
+                                                            {errorSubmit}
+                                                        </div>
+                                                    }
+                                                    <div>
+                                                        <label className={'merri text-primary mb-2'}>Date de la réservation : </label>
+                                                        <input  value={dateInput} onChange={handleDateInput} className={'form-control border border-primary shadow1'} type={'date'} required/>
+                                                    </div>
+                                                    {loadingRotation
                                                         ? (
-                                                            <div className={'alert alert-danger mt-4'}>
-                                                                Date antérieure à aujourd'hui.
-                                                            </div>
+                                                            <LoadingFetch message={'Chargement...'} />
                                                         )
                                                         : (
                                                             <>
-                                                                {rotation !== null &&
-                                                                    <>
-                                                                        {(morning.length === 0 && evening.length === 0)
-                                                                            ? (
-                                                                                <div className={'mt-4 alert alert-info mukta'}>
-                                                                                    Aucune réservation disponnible.
-                                                                                </div>
-                                                                            )
-                                                                            : (
+
+                                                                {errorDate
+                                                                    ? (
+                                                                        <div className={'alert alert-danger mt-4'}>
+                                                                            Date antérieure à aujourd'hui.
+                                                                        </div>
+                                                                    )
+                                                                    : (
+                                                                        <>
+                                                                            {rotation !== null &&
                                                                                 <>
-                                                                                    <div>
-                                                                                        <label className={'merri text-primary mt-4'}>Heure de la réservation : </label>
-                                                                                        {morning.length > 0 &&
+                                                                                    {(morning.length === 0 && evening.length === 0)
+                                                                                        ? (
+                                                                                            <div className={'mt-4 alert alert-info mukta'}>
+                                                                                                Aucune réservation disponnible.
+                                                                                            </div>
+                                                                                        )
+                                                                                        : (
                                                                                             <>
-                                                                                                <button data-id={'1'} onClick={toggleShowMorning} className={'btn btn-primary w-100 shadow1'}>Midi</button>
-                                                                                                <HeightTransition show={showMorning['1']}>
-                                                                                                    <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
-                                                                                                        {morning.map(el => {
-                                                                                                            return (
-                                                                                                                <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
-                                                                                                            )
-                                                                                                        })}
-                                                                                                    </div>
-                                                                                                </HeightTransition>
+                                                                                                <div>
+                                                                                                    <label className={'merri text-primary mt-4'}>Heure de la réservation : </label>
+                                                                                                    {morning.length > 0 &&
+                                                                                                        <>
+                                                                                                            <button data-id={'1'} onClick={toggleShowMorning} className={'btn btn-primary w-100 shadow1'}>Midi</button>
+                                                                                                            <HeightTransition show={showMorning['1']}>
+                                                                                                                <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
+                                                                                                                    {morning.map(el => {
+                                                                                                                        return (
+                                                                                                                            <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
+                                                                                                                        )
+                                                                                                                    })}
+                                                                                                                </div>
+                                                                                                            </HeightTransition>
+                                                                                                        </>
+                                                                                                    }
+
+                                                                                                    {evening.length > 0 &&
+                                                                                                        <>
+                                                                                                            <button data-id={'1'} onClick={toggleShowEvening} className={'btn btn-primary w-100 shadow1 mt-2 merri'}>Soir</button>
+
+                                                                                                            <HeightTransition show={showEvening["1"]}>
+                                                                                                                <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
+                                                                                                                    {evening.length > 0 && evening.map(el => {
+                                                                                                                        return (
+                                                                                                                            <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
+                                                                                                                        )
+                                                                                                                    })}
+                                                                                                                </div>
+                                                                                                            </HeightTransition>
+                                                                                                        </>
+                                                                                                    }
+                                                                                                </div>
+
+                                                                                                {choice !== null &&
+                                                                                                    <>
+                                                                                                        <div className={'mt-4'}>
+                                                                                                            <p className={'merri text-primary'}>Heure choisie: <span className={'merri text-secondary'}>{choice}</span></p>
+                                                                                                        </div>
+                                                                                                        <div className={'mt-4'}>
+                                                                                                            <label className={'merri text-primary mb-2'}>Nombres de convives : </label>
+                                                                                                            <input ref={conviveRef} defaultValue={userDefault?.convive ?? ''} className={'form-control border border-primary shadow1'} type={'number'} min={1} max={rotation?.rotation === '0' ? maxCustomer.value : (morning.includes(choice) ? (maxCustomer.value - rotation.morning) : (maxCustomer.value - rotation.evening))} required={true}/>
+                                                                                                        </div>
+                                                                                                        <div>
+                                                                                                            <label className={'merri text-primary mt-2 mb-2'}>Si vous avez des allergies : </label>
+                                                                                                            <input ref={allergenRef} defaultValue={userDefault?.allergen ?? ''} placeholder={'Noix, ...'}  className={'form-control border border-primary shadow1'} type={'text'} />
+                                                                                                        </div>
+                                                                                                        <button className={'btn btn-secondary w-100 merri shadow1 my-4'} type={'submit'}>Réserver</button>
+                                                                                                    </>
+                                                                                                }
                                                                                             </>
-                                                                                        }
-
-                                                                                        {evening.length > 0 &&
-                                                                                            <>
-                                                                                                <button data-id={'1'} onClick={toggleShowEvening} className={'btn btn-primary w-100 shadow1 mt-2 merri'}>Soir</button>
-
-                                                                                                <HeightTransition show={showEvening["1"]}>
-                                                                                                    <div className={'pt-4 d-flex flex-wrap justify-content-between'}>
-                                                                                                        {evening.length > 0 && evening.map(el => {
-                                                                                                            return (
-                                                                                                                <button onClick={handleChoice} data-horaire={el} className={'btn-secondary btn m-2'} key={el}>{el}</button>
-                                                                                                            )
-                                                                                                        })}
-                                                                                                    </div>
-                                                                                                </HeightTransition>
-                                                                                            </>
-                                                                                        }
-                                                                                    </div>
-
-                                                                                    {choice !== null &&
-                                                                                        <>
-                                                                                            <div className={'mt-4'}>
-                                                                                                <p className={'merri text-primary'}>Heure choisie: <span className={'merri text-secondary'}>{choice}</span></p>
-                                                                                            </div>
-                                                                                            <div className={'mt-4'}>
-                                                                                                <label className={'merri text-primary mb-2'}>Nombres de convives : </label>
-                                                                                                <input ref={conviveRef} defaultValue={userDefault?.convive ?? ''} className={'form-control border border-primary shadow1'} type={'number'} min={1} max={rotation?.rotation === '0' ? maxCustomer.value : (morning.includes(choice) ? (maxCustomer.value - rotation.morning) : (maxCustomer.value - rotation.evening))} required={true}/>
-                                                                                            </div>
-                                                                                            <div>
-                                                                                                <label className={'merri text-primary mt-2 mb-2'}>Si vous avez des allergies : </label>
-                                                                                                <input ref={allergenRef} defaultValue={userDefault?.allergen ?? ''} placeholder={'Noix, ...'}  className={'form-control border border-primary shadow1'} type={'text'} />
-                                                                                            </div>
-                                                                                            <button className={'btn btn-secondary w-100 merri shadow1 my-4'} type={'submit'}>Réserver</button>
-                                                                                        </>
+                                                                                        )
                                                                                     }
                                                                                 </>
-                                                                            )
-                                                                        }
-                                                                    </>
+                                                                            }
+                                                                        </>
+                                                                    )
                                                                 }
                                                             </>
                                                         )
                                                     }
-                                                </>
-                                            )
-                                        }
-                                    </form>
-                                </>
-                            )
-                        }
+                                                </form>
+                                            </>
+                                        )
+                                    }
 
-                    </FormDiv>
-                </Container>
-            </Main>
+                                </FormDiv>
+                            </Container>
+                        </Main>
+                    </>
+                )
+            }
+
             <Footer horaires={horaires} />
         </>
     )
